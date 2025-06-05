@@ -1,10 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use gift\appli\webui\actions\GetCategorieParIdAction;
-use gift\appli\webui\actions\GetCategoriesAction;
-use gift\appli\webui\actions\GetPrestationParIdAction;
-use gift\appli\webui\actions\GetPrestationsParCategorieAction;
+use gift\appli\webui\actions\AddEvenementAction;
 use gift\appli\webui\actions\RegisterAction;
 use gift\appli\webui\actions\SignoutAction;
 use Slim\App;
@@ -30,9 +27,10 @@ return function(App $app): App {
 });
     $app->get('/coffrets', \gift\appli\webui\actions\GetCoffretsAction::class);
     $app->get('/coffret/{id}', \gift\appli\webui\actions\GetCoffretDetailAction::class);
-    $app->map(['GET', 'POST'], '/box/create', \gift\appli\webui\actions\CreateBoxAction::class);
+    $app->map(['GET', 'POST'], '/box/create', \gift\appli\webui\actions\AddEvenementAction::class);
     $app->get('/coffret/{coffret_id}/prestation/{id}', \gift\appli\webui\actions\GetPrestationCoffretAction::class);
-    $app->post('/box/prestation/add', \gift\appli\webui\actions\AddPrestationBoxAction::class);
+    $app->post('/box/prestation/add', \gift\appli\webui\actions\AddEvenementAction::class);
     $app->get('/box/courante', \gift\appli\webui\actions\GetBoxCouranteAction::class);
+    $app->get('/evenement/create', AddEvenementAction::class);
     return $app;
 };
