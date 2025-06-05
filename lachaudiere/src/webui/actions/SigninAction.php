@@ -1,7 +1,7 @@
 <?php
-namespace gift\appli\webui\actions;
+namespace lachaudiere\webui\actions;
 
-use gift\appli\webui\providers\AuthnProviderInterface;
+use lachaudiere\webui\providers\AuthnProviderInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;

@@ -1,8 +1,8 @@
 <?php
-namespace gift\appli\webui\actions;
+namespace lachaudiere\webui\actions;
 
-use gift\appli\webui\providers\AuthnProvider;
-use gift\appli\webui\providers\CsrfTokenProvider;
+use lachaudiere\webui\providers\AuthnProvider;
+use lachaudiere\webui\providers\CsrfTokenProvider;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;

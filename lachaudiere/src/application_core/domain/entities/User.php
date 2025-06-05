@@ -1,5 +1,5 @@
 <?php
-namespace gift\appli\application_core\domain\entities;
+namespace lachaudiere\application_core\domain\entities;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model {
