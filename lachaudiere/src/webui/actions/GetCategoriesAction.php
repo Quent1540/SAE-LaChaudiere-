@@ -1,8 +1,8 @@
 <?php
-namespace gift\appli\webui\actions;
+namespace lachaudiere\webui\actions;
 
-use gift\appli\application_core\application\exceptions\EvenementException;
-use gift\appli\application_core\application\useCases\EvenementInterface;
+use lachaudiere\application_core\application\exceptions\EvenementException;
+use lachaudiere\application_core\application\useCases\EvenementInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;

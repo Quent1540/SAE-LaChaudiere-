@@ -1,4 +1,4 @@
 <?php
-namespace gift\appli\webui\providers;
+namespace lachaudiere\webui\providers;
 
 class CsrfTokenException extends \Exception {}

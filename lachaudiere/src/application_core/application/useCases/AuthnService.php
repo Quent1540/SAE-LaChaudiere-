@@ -1,8 +1,8 @@
 <?php
-namespace gift\appli\application_core\application\useCases;
+namespace lachaudiere\application_core\application\useCases;
 
-use gift\appli\application_core\application\useCases;
-use gift\appli\application_core\domain\entities\User;
+use lachaudiere\application_core\application\useCases;
+use lachaudiere\application_core\domain\entities\User;
 use Ramsey\Uuid\Uuid;
 
 class AuthnService implements AuthnServiceInterface {

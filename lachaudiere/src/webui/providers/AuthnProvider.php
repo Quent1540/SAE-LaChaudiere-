@@ -1,8 +1,8 @@
 <?php
-namespace gift\appli\webui\providers;
+namespace lachaudiere\webui\providers;
 
-use gift\appli\application_core\application\useCases\AuthnServiceInterface;
-use gift\appli\application_core\domain\entities\User;
+use lachaudiere\application_core\application\useCases\AuthnServiceInterface;
+use lachaudiere\application_core\domain\entities\User;
 
 class AuthnProvider implements AuthnProviderInterface {
     protected AuthnServiceInterface $authnService;

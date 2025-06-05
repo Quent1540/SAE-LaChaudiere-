@@ -1,7 +1,7 @@
 <?php
-namespace gift\appli\webui\providers;
+namespace lachaudiere\webui\providers;
 
-use gift\appli\application_core\domain\entities\User;
+use lachaudiere\application_core\domain\entities\User;
 
 interface AuthnProviderInterface {
     public function getSignedInUser(): ?User;

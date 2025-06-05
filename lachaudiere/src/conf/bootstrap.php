@@ -18,9 +18,9 @@ $app = AppFactory::create();
 
 //Enregistrement du service Evenement dans le conteneur DI
 $app->getContainer()->set(
-    \gift\appli\application_core\application\useCases\EvenementInterface::class,
+    \lachaudiere\application_core\application\useCases\EvenementInterface::class,
     function() {
-        return new \gift\appli\application_core\application\useCases\Evenement();
+        return new \lachaudiere\application_core\application\useCases\Evenement();
     }
 );
 
@@ -36,25 +36,25 @@ $app->addErrorMiddleware(true, true, true);
 
 //Enregistrement du service AuthnProvider dans le conteneur DI
 $app->getContainer()->set(
-    \gift\appli\webui\providers\AuthnProviderInterface::class,
+    \lachaudiere\webui\providers\AuthnProviderInterface::class,
     function($c) {
-        $authnService = $c->get(\gift\appli\application_core\application\useCases\AuthnService::class);
-        return new \gift\appli\webui\providers\AuthnProvider($authnService);
+        $authnService = $c->get(\lachaudiere\application_core\application\useCases\AuthnService::class);
+        return new \lachaudiere\webui\providers\AuthnProvider($authnService);
     }
 );
 
 //Enregistrement du service AuthnService dans le conteneur DI
 $app->getContainer()->set(
-    \gift\appli\application_core\application\useCases\AuthnServiceInterface::class,
+    \lachaudiere\application_core\application\useCases\AuthnServiceInterface::class,
     function() {
-        return new \gift\appli\application_core\application\useCases\AuthnService();
+        return new \lachaudiere\application_core\application\useCases\AuthnService();
     }
     );
 //Enregistrement du service Box dans le conteneur DI
 $app->getContainer()->set(
-    \gift\appli\application_core\application\useCases\BoxInterface::class,
+    \lachaudiere\application_core\application\useCases\BoxInterface::class,
     function() {
-        return new \gift\appli\application_core\application\useCases\Box();
+        return new \lachaudiere\application_core\application\useCases\Box();
     }
 );
 

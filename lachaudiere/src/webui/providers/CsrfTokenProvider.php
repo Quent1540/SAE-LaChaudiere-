@@ -1,5 +1,5 @@
 <?php
-namespace gift\appli\webui\providers;
+namespace lachaudiere\webui\providers;
 
 class CsrfTokenProvider{
     private const SESSION_KEY = '_csrf_token';
