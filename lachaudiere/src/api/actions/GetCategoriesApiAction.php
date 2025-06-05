@@ -1,14 +1,14 @@
 <?php
 namespace gift\appli\api\actions;
 
-use gift\appli\application_core\application\useCases\CatalogueInterface;
+use gift\appli\application_core\application\useCases\EvenementInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class GetCategoriesApiAction {
-    private CatalogueInterface $catalogue;
+    private EvenementInterface $catalogue;
 
-    public function __construct(CatalogueInterface $catalogue) {
+    public function __construct(EvenementInterface $catalogue) {
         $this->catalogue = $catalogue;
     }
 

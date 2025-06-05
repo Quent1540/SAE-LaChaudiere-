@@ -3,7 +3,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 use DI\Container;
 use Slim\Factory\AppFactory;
-use gift\appli\infrastructure\Eloquent;
+use lachaudiere\infrastructure\Eloquent;
 
 //Création du conteneur
 $container = new Container();
@@ -16,11 +16,11 @@ Eloquent::init(__DIR__ . '/gift.db.conf.ini');
 //Création de l'application
 $app = AppFactory::create();
 
-//Enregistrement du service Catalogue dans le conteneur DI
+//Enregistrement du service Evenement dans le conteneur DI
 $app->getContainer()->set(
-    \gift\appli\application_core\application\useCases\CatalogueInterface::class,
+    \gift\appli\application_core\application\useCases\EvenementInterface::class,
     function() {
-        return new \gift\appli\application_core\application\useCases\Catalogue();
+        return new \gift\appli\application_core\application\useCases\Evenement();
     }
 );
 
