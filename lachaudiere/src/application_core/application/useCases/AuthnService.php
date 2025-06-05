@@ -15,7 +15,6 @@ class AuthnService implements AuthnServiceInterface {
         }
 
         $user = new User();
-        $user->id_utilisateur = Uuid::uuid4()->toString();
         $user->email = $email;
         $user->mot_de_passe_hash = password_hash($password, PASSWORD_BCRYPT);
         $user->role = $role;
