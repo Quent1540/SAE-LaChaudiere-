@@ -8,7 +8,7 @@ Système : MariaDB
 Serveur : sql
 Utilisateur : root
 Mot de passe : root
-Base de données : gift
+Base de données : lachaudiere
 
 Accéder à l'appli :
 http://localhost:8000
