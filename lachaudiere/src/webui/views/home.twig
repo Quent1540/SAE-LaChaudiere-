@@ -2,10 +2,9 @@
 
 {% block title %}Accueil{% endblock %}
 {% block content %}
-    <h1>Bienvenue sur Gift Appli</h1>
+    <h1>Bienvenue sur LaChaudiereAgenda</h1>
     <p>
-        Cette application vous permet de découvrir et de gérer des catégories de prestations.<br>
-        Parcourez les différentes catégories et trouvez la prestation qui vous convient !
+        Cette application vous permet de de créer et stocker des événements culturels proposés par La Chaudière
         <br><br>
         {% if user %}
             <form action="/signout" method="post" style="display:inline;">
@@ -20,26 +19,18 @@
                             </form>
         {% endif %}
         <br>
-        <a href="/categories">Accéder aux catégories</a>
+         <a href="/categories">Gérer les catégories</a>
+         <br>
+        <a href="/prestations">Afficher la liste des événements</a>
         <br>
-        <a href="/prestations">Accéder aux prestations</a>
+        <a href="/categories">Affichage des événements par catégorie</a>
         <br>
-        <a href="/coffrets">Accéder aux coffrets</a>
+        <a href="/box/create">Créer un evenement</a>
         <br>
-        <a href="/box/create">Créer une nouvelle box</a>
-        <br>
-        <!-- <a href="/box/courante">Voir la box courante</a> -->
         <br>
         <h2>Liens des APIs</h2>
         <ul>
-            <li><a href="/api/categories">API des catégories</a></li>
-            <li><a href="/api/prestations">API des prestations</a></li>
-            <li><a href="/api/categorie/1/prestations">API des prestations de la catégorie 1</a></li>
-            <li><a href="/api/categorie/2/prestations">API des prestations de la catégorie 2</a></li>
-            <li><a href="/api/categorie/3/prestations">API des prestations de la catégorie 3</a></li>
-            <li><a href="/api/categorie/4/prestations">API des prestations de la catégorie 4</a></li>
-            <li><a href="/api/categorie/5/prestations">API des prestations de la catégorie 5</a></li>
-            <li><a href="/api/box/360bb4cc-e092-3f00-9eae-774053730cb2">API d'exemple pour une box</a></li>
+            <li><a href="/api/categories">API</a></li>
         </ul>
     </p>
 {% endblock %}
