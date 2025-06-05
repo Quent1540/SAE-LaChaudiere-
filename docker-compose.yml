@@ -1,0 +1,46 @@
+
+networks:
+  gift.net:
+    driver: bridge
+
+services:
+  app:
+    build:
+      context: build
+      dockerfile: 8.4-cli.Dockerfile
+    ports:
+      - "8000:80"
+    volumes :
+      - ./giftAppli/:/var/php
+      - ./images/img:/var/php/public/img
+    working_dir: /var/php/src
+    networks:
+      - gift.net
+    depends_on:
+      - sql
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+
+
+  #############################
+  # mysql + adminer / can be replaced by mariadb
+  #############################
+  sql:
+    image: mariadb:latest
+    env_file:
+      - .database_env
+    ports:
+      - "3306:3306"
+    networks:
+      gift.net:
+        aliases:
+          - sql.db
+    volumes:
+      - ./db_data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - gift.net
+

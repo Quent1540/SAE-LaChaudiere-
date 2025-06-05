@@ -1,0 +1,19 @@
+{% extends "main.twig" %}
+
+{% block title %}Détail Prestation{% endblock %}
+
+{% block content %}
+    <h1>Détail de la prestation</h1>
+    <p><strong>ID :</strong> {{ prestation.id }}</p>
+    <p><strong>Libellé :</strong> {{ prestation.libelle }}</p>
+    <p><strong>Description :</strong> {{ prestation.description }}</p>
+    <p><strong>Tarif :</strong> {{ prestation.tarif }} € / {{ prestation.unite }}</p>
+    <br>
+    <form method="post" action="/box/prestation/add">
+        <input type="hidden" name="presta_id" value="{{ prestation.id }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit">Ajouter à la box</button>
+    </form>
+    <br>
+    <a href="/">Retour à la page d'accueil</a>
+{% endblock %}

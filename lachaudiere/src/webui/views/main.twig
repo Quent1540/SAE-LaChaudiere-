@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Titre de la page{% endblock %}</title>
+    <!-- CSS -->
+{% block styles %}
+<style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            grid-template-columns: 200px 1fr;
+            grid-template-areas:
+                "header header"
+                "nav main"
+                "footer footer";
+        }
+        header { grid-area: header; background: #eee; padding: 1em; font-family:'Segoe UI'}
+        nav { grid-area: nav; background: #ddd; padding: 1em; }
+        main { grid-area: main; padding: 1em; }
+        footer { grid-area: footer; background: #eee; text-align: center; padding: 1em; }
+        main {
+            grid-area: main;
+            padding: 2em;
+            background: #fafbfc;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(60, 60, 60, 0.06);
+            margin: 2em 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #222;
+            min-height: 60vh;
+        }
+
+        main h1, main h2, main h3 {
+            color: #2d3a4a;
+            margin-top: 0;
+        }
+
+        main a {
+            color: #3a6ea5;
+            text-decoration: underline;
+        }
+
+        main a:hover {
+            color: #27496d;
+        }
+    .button-modern {
+        background: #f5f7fa;
+        color: #2d3a4a;
+        border: 1px solid #bfc9d1;
+        border-radius: 5px;
+        padding: 9px 20px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        margin: 5px 10px 5px 0;
+        transition: background 0.15s, color 0.15s, border 0.15s;
+    }
+    .button-modern:hover {
+        background: #e3eaf2;
+        color: #235390;
+        border-color: #235390;
+    }
+    </style>
+{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>Gift Appli</h1>
+    </header>
+    <nav>
+        <ul>
+            {% for item in nav_items %}
+                <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+            {% endfor %}
+        </ul>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025</p>
+    </footer>
+</body>
+</html>

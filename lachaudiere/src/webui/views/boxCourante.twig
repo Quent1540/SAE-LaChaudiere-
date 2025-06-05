@@ -1,0 +1,32 @@
+{% extends "base.twig" %}
+
+{% block title %}Coffret en cours{% endblock %}
+
+{% block content %}
+    <h1>Coffret en cours de construction</h1>
+
+    {% if box is defined and box.prestations|length > 0 %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom de la prestation</th>
+                    <th>Description</th>
+                    <th>Tarif (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prestation in box.prestations %}
+                    <tr>
+                        <td>{{ prestation.nom }}</td>
+                        <td>{{ prestation.description }}</td>
+                        <td>{{ prestation.tarif|number_format(2, ',', ' ') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><strong>Montant total :</strong> {{ box.total|number_format(2, ',', ' ') }} €</p>
+        <p><strong>État :</strong> {{ box.etat }}</p>
+    {% else %}
+        <p>Aucune prestation dans ce coffret.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "main.twig" %}
+
+{% block title %}Liste des prestations{% endblock %}
+
+{% block content %}
+    <h1>Liste des prestations</h1>
+    <ul>
+        {% for prestation in prestations %}
+            <li>
+                <a href="/prestation/{{ prestation.id }}">
+                    {{ prestation.libelle }} ({{ prestation.tarif }} € / {{ prestation.unite }})
+                </a>
+            </li>
+        {% else %}
+            <li>Aucune prestation trouvée.</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Retour à l'accueil</a>
+{% endblock %}

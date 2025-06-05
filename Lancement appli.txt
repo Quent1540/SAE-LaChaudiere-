@@ -1,0 +1,14 @@
+Lancer docker desktop
+Se mettre dans le répertoire du projet
+docker compose up --build
+
+Lancer la BD :
+http://localhost:8080
+Système : MariaDB
+Serveur : sql
+Utilisateur : root
+Mot de passe : root
+Base de données : gift
+
+Accéder à l'appli :
+http://localhost:8000

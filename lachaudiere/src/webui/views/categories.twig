@@ -1,0 +1,20 @@
+{% extends "main.twig" %}
+
+{% block title %}Catégories{% endblock %}
+
+{% block content %}
+    <h1>Catégories disponibles</h1>
+    <ul>
+        {% for categ in categories %}
+            <li>
+                <a href="/categorie/{{ categ.id }}">
+                    ID: {{ categ.id }} - Libellé: {{ categ.libelle }}
+                </a>
+            </li>
+        {% else %}
+            <li>Aucune catégorie trouvée.</li>
+        {% endfor %}
+        <br>
+            <a href="/">Retour à la page d'accueil</a>
+    </ul>
+{% endblock %}

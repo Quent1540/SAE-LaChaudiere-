@@ -1,0 +1,9 @@
+vendor/
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+lachaudiere/src/views/cache/
+composer.lock
+db_data/

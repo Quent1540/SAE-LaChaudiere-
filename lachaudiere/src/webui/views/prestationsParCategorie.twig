@@ -1,0 +1,26 @@
+{% extends "main.twig" %}
+
+{% block title %}Prestations de la catégorie{% endblock %}
+
+{% block content %}
+    <h1>{{ categorie.libelle }} — Prestations</h1>
+
+    {% if categorie.prestations is not empty %}
+        <ul>
+            {% for prestation in categorie.prestations %}
+                <li>
+                    <strong>{{ prestation.libelle }}</strong><br>
+                    {{ prestation.description }}<br>
+                    {{ prestation.tarif }} € / {{ prestation.unite }}
+                    <a href="/prestation/{{ prestation.id }}">Détails</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <a href="/categorie/{{ categorie.id }}">Retour à la catégorie</a>
+        <br><br>
+            <a href="/">Retour à la page d'accueil</a>
+    {% else %}
+        <p>Aucune prestation trouvée pour cette catégorie.</p>
+    {% endif %}
+{% endblock %}
