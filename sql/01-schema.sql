@@ -1,16 +1,14 @@
--- Adminer 4.17.1 MySQL-MariaDB Dump Compatible
-
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
-
 DROP TABLE IF EXISTS `images_evenements`;
 DROP TABLE IF EXISTS `evenements`;
 DROP TABLE IF EXISTS `categories`;
 DROP TABLE IF EXISTS `utilisateurs`;
-SET FOREIGN_KEY_CHECKS=1; 
+
+SET FOREIGN_KEY_CHECKS=1;
 
 CREATE TABLE `utilisateurs` (
   `id_utilisateur` INT NOT NULL AUTO_INCREMENT,
@@ -18,16 +16,15 @@ CREATE TABLE `utilisateurs` (
   `mot_de_passe_hash` VARCHAR(255) NOT NULL, 
   `role` INT(2) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_utilisateur`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC)
+  UNIQUE INDEX `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 
 CREATE TABLE `categories` (
   `id_categorie` INT NOT NULL AUTO_INCREMENT,
   `libelle` VARCHAR(255) NOT NULL,
   `description` TEXT NULL,
   PRIMARY KEY (`id_categorie`),
-  UNIQUE INDEX `libelle_UNIQUE` (`libelle` ASC)
+  UNIQUE INDEX `libelle_UNIQUE` (`libelle`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `evenements` (
@@ -45,12 +42,11 @@ CREATE TABLE `evenements` (
   PRIMARY KEY (`id_evenement`),
   CONSTRAINT `fk_evenements_categories`
     FOREIGN KEY (`id_categorie`)
-    REFERENCES `categories` (`id_categorie`)
+    REFERENCES `categories` (`id_categorie`),
   CONSTRAINT `fk_evenements_utilisateurs`
     FOREIGN KEY (`id_utilisateur_creation`)
     REFERENCES `utilisateurs` (`id_utilisateur`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 
 CREATE TABLE `images_evenements` (
   `id_image` INT NOT NULL AUTO_INCREMENT,
@@ -64,4 +60,3 @@ CREATE TABLE `images_evenements` (
     FOREIGN KEY (`id_evenement`)
     REFERENCES `evenements` (`id_evenement`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
