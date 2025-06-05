@@ -1,13 +1,15 @@
 <?php
 namespace lachaudiere\application_core\domain\entities;
+
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model {
-    protected $table = 'user';
-    protected $primaryKey = 'id';
+    protected $table = 'utilisateurs';
+    protected $primaryKey = 'id_utilisateur';
+
     public $incrementing = false;
-    protected $keyType = 'string';
+    protected $keyType = 'string'; 
+
     public $timestamps = false;
 
-    protected $fillable = ['id', 'user_id', 'password', 'role'];
 }
