@@ -6,11 +6,8 @@ use lachaudiere\webui\actions\RegisterAction;
 use lachaudiere\webui\actions\SignoutAction;
 use lachaudiere\webui\actions\DashboardAction;
 use lachaudiere\webui\providers\AuthnProviderInterface;
-use lachaudiere\webui\actions\AddEvenementAction;
 use lachaudiere\webui\actions\GetCategorieParIdAction;
 use lachaudiere\webui\actions\GetCategoriesAction;
-use lachaudiere\webui\actions\RegisterAction;
-use lachaudiere\webui\actions\SignoutAction;
 use Slim\App;
 use lachaudiere\webui\actions\SigninAction;
 
