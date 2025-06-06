@@ -35,7 +35,6 @@ return function(App $app): App {
         $group->get('/categorie/{id}', GetCategorieParIdAction::class);
         $group->get('/admin/dashboard', DashboardAction::class)->setName('admin.dashboard');
         $group->get('/evenement/create', AddEvenementAction::class);
-        $app->map(['GET', 'POST'], '/categorie/create', AddCategorieAction::class);
     })->add(AuthMiddleware::class);
 
     return $app;
