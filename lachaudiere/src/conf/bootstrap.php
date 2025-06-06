@@ -16,11 +16,11 @@ Eloquent::init(__DIR__ . '/gift.db.conf.ini');
 //Création de l'application
 $app = AppFactory::create();
 
-//Enregistrement du service Evenement dans le conteneur DI
+//Enregistrement du service EvenementService dans le conteneur DI
 $app->getContainer()->set(
     \lachaudiere\application_core\application\useCases\EvenementInterface::class,
     function() {
-        return new \lachaudiere\application_core\application\useCases\Evenement();
+        return new \lachaudiere\application_core\application\useCases\EvenementService();
     }
 );
 
