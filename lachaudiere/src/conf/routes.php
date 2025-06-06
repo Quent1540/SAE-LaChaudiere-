@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use lachaudiere\appli\webui\actions\AddEvenementAction;
+use lachaudiere\webui\actions\AddEvenementAction;
 use lachaudiere\webui\actions\RegisterAction;
 use lachaudiere\webui\actions\SignoutAction;
 use lachaudiere\webui\actions\DashboardAction;
@@ -32,10 +32,8 @@ return function(App $app): App {
 });
     $app->get('/coffrets', \lachaudiere\appli\webui\actions\GetCoffretsAction::class);
     $app->get('/coffret/{id}', \lachaudiere\appli\webui\actions\GetCoffretDetailAction::class);
-    $app->map(['GET', 'POST'], '/box/create', AddEvenementAction::class);
+    $app->map(['GET', 'POST'], '/evenement/create', AddEvenementAction::class);
     $app->get('/coffret/{coffret_id}/prestation/{id}', \lachaudiere\appli\webui\actions\GetPrestationCoffretAction::class);
-    $app->post('/box/prestation/add', AddEvenementAction::class);
     $app->get('/box/courante', \lachaudiere\appli\webui\actions\GetBoxCouranteAction::class);
-    $app->get('/evenement/create', AddEvenementAction::class);
     return $app;
 };

@@ -4,6 +4,7 @@
 <h2>Créer un événement</h2>
 
 <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <div>
         <label for="titre">Titre de l'événement :</label>
         <input type="text" id="titre" name="titre" required>
@@ -44,10 +45,16 @@
     </div>
 
     <div>
+        <label for="legende">Légende de l'image :</label>
+        <input type="text" id="legende" name="legende" value="Image principale">
+    </div>
+
+    <div>
         <label for="est_publie">Publié :</label>
         <input type="checkbox" id="est_publie" name="est_publie" value="1">
     </div>
 
     <button type="submit" class="button-modern">Créer</button>
 </form>
+
 {% endblock %}

@@ -46,4 +46,24 @@ class EvenementService implements EvenementInterface {
             throw new EvenementException('Événement introuvable : ' . $e->getMessage());
         }
     }
+
+    public function createEvenement(array $data)
+    {
+        try {
+            $evenement = new Evenement();
+            $evenement->titre = $data['titre'] ?? '';
+            $evenement->description = $data['description'] ?? '';
+            $evenement->tarif = $data['tarif'] ?? 0;
+            $evenement->date_debut = $data['date_debut'] ?? null;
+            $evenement->date_fin = $data['date_fin'] ?? null;
+            $evenement->id_categorie = $data['id_categorie'] ?? null;
+            $evenement->est_publie = $data['est_publie'] ?? 0;
+            $evenement->id_utilisateur_creation = $data['id_utilisateur_creation'] ?? null;
+            $evenement->save();
+
+            return $evenement->id_evenement;
+        } catch (\Exception $e) {
+            throw new EvenementException('Erreur lors de la création de l\'événement : ' . $e->getMessage());
+        }
+    }
 }
