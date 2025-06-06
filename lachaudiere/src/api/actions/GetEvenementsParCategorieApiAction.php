@@ -13,8 +13,21 @@ class GetEvenementsParCategorieApiAction {
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response {
+        $periodes = explode(',', $request->getQueryParams()['periode'] ?? '');
+        $now = date('Y-m-d H:i:s');
         $id_categorie = (int)$args['id_categorie'];
         $evenements = $this->evenement->getEvenementsParCategorie($id_categorie);
+        //Filtrer les événements selon les périodes demandées
+        if ($periodes && $periodes[0] !== '') {
+            $evenements = array_filter($evenements, function($event) use ($periodes, $now) {
+                foreach ($periodes as $periode) {
+                    if ($periode === 'passee' && $event['date_fin'] < $now) return true;
+                    if ($periode === 'courante' && $event['date_debut'] <= $now && $event['date_fin'] >= $now) return true;
+                    if ($periode === 'future' && $event['date_debut'] > $now) return true;
+                }
+                return false;
+            });
+        }
         //Pour trier par date de début
         usort($evenements, function($a, $b) {
             return strtotime($a['date_debut']) <=> strtotime($b['date_debut']);

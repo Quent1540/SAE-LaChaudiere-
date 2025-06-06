@@ -3,10 +3,13 @@
 {% block title %}Connexion - Administration{% endblock %}
 
 {% block content %}
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
     <h2>Connexion Administration</h2>
 
-    {% if error %}
-        <p class="error">{{ error }}</p>
+    {% if session.auth_message %}
+        <div class="alert alert-warning">{{ session.auth_message }}</div>
     {% endif %}
 
     <form method="POST" action="{{ url_for('signin') }}">

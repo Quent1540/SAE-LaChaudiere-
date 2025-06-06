@@ -12,7 +12,7 @@ use lachaudiere\webui\providers\AuthnProvider;
 use lachaudiere\application_core\application\useCases\AuthnServiceInterface;
 use lachaudiere\application_core\application\useCases\AuthnService;
 use lachaudiere\application_core\application\useCases\EvenementInterface;
-use lachaudiere\application_core\application\useCases\Evenement;
+use lachaudiere\application_core\domain\entities\Evenement;
 use lachaudiere\application_core\application\useCases\BoxInterface;
 use lachaudiere\application_core\application\useCases\Box;
 
@@ -40,10 +40,20 @@ $app->addErrorMiddleware(true, true, true);
 
 // Enregistrements des services dans le conteneur DI
 
-$container->set(EvenementInterface::class, fn() => new Evenement());
+$app->getContainer()->set(
+    \lachaudiere\application_core\application\useCases\EvenementInterface::class,
+    function() {
+        return new \lachaudiere\application_core\application\useCases\EvenementService();
+    }
+);
 $container->set(BoxInterface::class, fn() => new Box());
 $container->set(AuthnServiceInterface::class, fn() => new AuthnService());
 $container->set(AuthnProviderInterface::class, fn($c) => new AuthnProvider($c->get(AuthnServiceInterface::class)));
+
+$container->set(AuthMiddleware::class, function (ContainerInterface $c) {
+    $authProvider = $c->get(AuthnProviderInterface::class);
+    return new AuthMiddleware($authProvider);
+});
 
 // Twig pour injection dans les actions
 $container->set(Twig::class, fn() => $twig);

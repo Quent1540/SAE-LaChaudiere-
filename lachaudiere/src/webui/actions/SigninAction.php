@@ -26,18 +26,19 @@ class SigninAction {
         if ($request->getMethod() === 'POST') {
             $data = $request->getParsedBody();
             $submittedToken = $data['csrf_token'] ?? null;
-            $email = trim($data['email'] ?? ''); 
-            $password = $data['password'] ?? '';
 
             try {
+
                 CsrfTokenProvider::check($submittedToken);
+                $email = trim($data['email'] ?? ''); 
+                $password = $data['password'] ?? '';
 
                 if (empty($email) || empty($password)) {
                     throw new \InvalidArgumentException("Email et mot de passe sont requis.");
                 }
 
                 if ($this->authProvider->signin($email, $password)) {
-                    return $response->withHeader('Location', $router->urlFor('admin.dashboard'))->withStatus(302);
+                    return $response->withHeader('Location', $router->urlFor('home'))->withStatus(302);
                 } else {
                     throw new \Exception("Identifiants incorrects.");
                 }
@@ -50,7 +51,6 @@ class SigninAction {
             }
 
             $csrfToken = CsrfTokenProvider::generate();
-            $csrfToken = "test";
             return $this->view->render($response, 'signin.twig', [
                 'csrf_token' => $csrfToken,
                 'error' => $error ?? null,
@@ -62,8 +62,17 @@ class SigninAction {
             if ($this->authProvider->isSignedIn()) {
                 return $response->withHeader('Location', $router->urlFor('admin.dashboard'))->withStatus(302);
             }
-
+            
             $csrfToken = CsrfTokenProvider::generate();
+            if (isset($_SESSION['auth_message'])) {
+                $m_error = $_SESSION['auth_message'];
+                unset($_SESSION['auth_message']);
+                return $this->view->render($response, 'signin.twig', [
+                'csrf_token' => $csrfToken,
+                'error' => $m_error,
+            ]);
+            }
+            
             return $this->view->render($response, 'signin.twig', [
                 'csrf_token' => $csrfToken,
                 'error' => null,
