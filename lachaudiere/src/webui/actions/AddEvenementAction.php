@@ -1,6 +1,9 @@
 <?php
 namespace lachaudiere\webui\actions;
 
+use lachaudiere\application_core\application\useCases\CategoriesService;
+use lachaudiere\application_core\application\useCases\EvenementService;
+use lachaudiere\application_core\application\useCases\ImagesEvenementService;
 use lachaudiere\webui\providers\AuthnProvider;
 use lachaudiere\webui\providers\CsrfTokenProvider;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -10,20 +13,26 @@ use Slim\Views\Twig;
 class AddEvenementAction {
     protected AuthnProvider $authProvider;
     protected $evenementService;
-    protected $categorieService;
+    protected $categoriesService;
+    protected $imagesEvenementService;
 
-    public function __construct(AuthnProvider $authProvider, $evenementService, $categorieService) {
+    public function __construct(
+        AuthnProvider $authProvider,
+        EvenementService $evenementService,
+        CategoriesService $categoriesService,
+        ImagesEvenementService $imagesEvenementService
+    ) {
         $this->authProvider = $authProvider;
         $this->evenementService = $evenementService;
-        $this->categorieService = $categorieService;
+        $this->categoriesService = $categoriesService;
+        $this->imagesEvenementService = $imagesEvenementService;
     }
 
     public function __invoke(Request $request, Response $response, $args) {
         $method = $request->getMethod();
         $view = Twig::fromRequest($request);
 
-        // Récupérer les catégories pour le formulaire
-        $categories = $this->categorieService->getCategories();
+        $categories = $this->categoriesService->getCategories();
 
         if ($method === 'GET') {
             $csrf_token = CsrfTokenProvider::generate();
@@ -44,6 +53,8 @@ class AddEvenementAction {
         $id_categorie = $data['id_categorie'] ?? null;
         $est_publie = isset($data['est_publie']) ? 1 : 0;
 
+        $legende = $data['legende'] ?? 'Image principale';
+        $ordre_affichage = 0;
 
         $user = $this->authProvider->getSignedInUser();
         if (!$user) {
@@ -52,18 +63,39 @@ class AddEvenementAction {
             ]);
         }
 
-        // Création de l'événement (à adapter selon ton service)
         $id = $this->evenementService->createEvenement([
             'titre' => $titre,
-            'description' => $description, // markdown
+            'description' => $description,
             'tarif' => $tarif,
             'date_debut' => $date_debut,
             'date_fin' => $date_fin,
             'id_categorie' => $id_categorie,
-            'image' => $image,
             'est_publie' => $est_publie,
-            'createur_id' => $user->id
+            'id_utilisateur_creation' => $user->id_utilisateur,
         ]);
+
+        //ne fonctionne pas vraiment pour le moment
+        $uploadedFiles = $request->getUploadedFiles();
+        $imageFile = $uploadedFiles['image'] ?? null;
+        $url_image = null;
+        if ($imageFile && $imageFile->getError() === UPLOAD_ERR_OK) {
+            $filename = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '_', $imageFile->getClientFilename());
+            $uploadDir = __DIR__ . '/../../../public/uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $imageFile->moveTo($uploadDir . $filename);
+            $url_image = '/uploads/' . $filename;
+        }
+
+        if ($url_image) {
+            $this->imagesEvenementService->addImageEvenement([
+                'id_evenement' => $id,
+                'url_image' => $url_image,
+                'legende' => $legende,
+                'ordre_affichage' => $ordre_affichage
+            ]);
+        }
 
         return $view->render($response, 'evenementCree.twig', [
             'success' => true,

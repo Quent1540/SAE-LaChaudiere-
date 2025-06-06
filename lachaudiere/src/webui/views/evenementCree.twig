@@ -1,0 +1,10 @@
+{% if success %}
+    <div class="alert alert-success">
+        L'événement <strong>{{ titre }}</strong> a bien été créé !
+    </div>
+    <a href="/" class="btn btn-primary">Retour à l'accueil</a>
+{% else %}
+    <div class="alert alert-danger">
+        Une erreur est survenue lors de la création de l'événement.
+    </div>
+{% endif %}

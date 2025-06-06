@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use lachaudiere\appli\webui\actions\AddEvenementAction;
+use lachaudiere\webui\actions\AddEvenementAction;
 use lachaudiere\webui\actions\RegisterAction;
 use lachaudiere\webui\actions\SignoutAction;
 use lachaudiere\webui\actions\DashboardAction;
@@ -21,7 +21,7 @@ return function(App $app): App {
         $user = $authProvider->getSignedInUser();
         $view = \Slim\Views\Twig::fromRequest($request);
         return $view->render($response, 'home.twig', [
-         'user' => $user
+            'user' => $user
         ]);
     });
 
@@ -30,17 +30,8 @@ return function(App $app): App {
         $group->map(['GET','POST'], '/register', RegisterAction::class);
         $group->get('/categories', GetCategoriesAction::class);
         $group->get('/categorie/{id}', GetCategorieParIdAction::class);
-        $group->get('/coffrets', \lachaudiere\appli\webui\actions\GetCoffretsAction::class);
-        $group->get('/coffret/{id}', \lachaudiere\appli\webui\actions\GetCoffretDetailAction::class);
         $group->get('/admin/dashboard', DashboardAction::class)->setName('admin.dashboard');
-        $group->map(['GET', 'POST'], '/box/create', AddEvenementAction::class);
-        $group->post('/box/prestation/add', AddEvenementAction::class);
-        $group->get('/box/courante', \lachaudiere\appli\webui\actions\GetBoxCouranteAction::class);
         $group->get('/evenement/create', AddEvenementAction::class);
-        $group->get('/coffret/{coffret_id}/prestation/{id}', \lachaudiere\appli\webui\actions\GetPrestationCoffretAction::class);
-        $group->get('/prestations', \lachaudiere\appli\webui\actions\GetPrestationsAction::class);
-        $group->get('/prestation/{id}', GetPrestationParIdAction::class);
-        $group->get('/categories/{id}/prestations', GetPrestationsParCategorieAction::class);
     })->add(AuthMiddleware::class);
 
     return $app;
