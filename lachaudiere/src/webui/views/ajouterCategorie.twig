@@ -1,0 +1,26 @@
+{% extends "main.twig" %}
+
+{% block content %}
+<h2>Créer une catégorie</h2>
+
+{% if erreur %}
+    <div class="alert alert-danger">{{ erreur }}</div>
+{% endif %}
+
+<form method="post">
+    <div>
+        <label for="libelle">Libellé :</label>
+        <input type="text" id="libelle" name="libelle" required>
+    </div>
+
+    <div>
+        <label for="description">Description (Markdown autorisé) :</label>
+        <textarea id="description" name="description" rows="6"></textarea>
+    </div>
+
+    <button type="submit">Créer</button>
+</form>
+
+<br>
+<a href="/">Retour à la page d'accueil</a>
+{% endblock %}
