@@ -11,10 +11,8 @@ use lachaudiere\webui\providers\AuthnProviderInterface;
 use lachaudiere\webui\providers\AuthnProvider;
 use lachaudiere\application_core\application\useCases\AuthnServiceInterface;
 use lachaudiere\application_core\application\useCases\AuthnService;
-use lachaudiere\application_core\application\useCases\EvenementInterface;
+use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use lachaudiere\application_core\domain\entities\Evenement;
-use lachaudiere\application_core\application\useCases\BoxInterface;
-use lachaudiere\application_core\application\useCases\Box;
 
 // Création du conteneur
 $container = new Container();
@@ -41,12 +39,11 @@ $app->addErrorMiddleware(true, true, true);
 // Enregistrements des services dans le conteneur DI
 
 $app->getContainer()->set(
-    \lachaudiere\application_core\application\useCases\EvenementInterface::class,
+    \lachaudiere\application_core\application\useCases\EvenementServiceInterface::class,
     function() {
         return new \lachaudiere\application_core\application\useCases\EvenementService();
     }
 );
-$container->set(BoxInterface::class, fn() => new Box());
 $container->set(AuthnServiceInterface::class, fn() => new AuthnService());
 $container->set(AuthnProviderInterface::class, fn($c) => new AuthnProvider($c->get(AuthnServiceInterface::class)));
 

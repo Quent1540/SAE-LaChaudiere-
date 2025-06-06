@@ -2,15 +2,15 @@
 namespace lachaudiere\webui\actions;
 
 use lachaudiere\application_core\application\exceptions\EvenementException;
-use lachaudiere\application_core\application\useCases\EvenementInterface;
+use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 
 class GetCategoriesAction {
-    private EvenementInterface $catalogue;
+    private EvenementServiceInterface $catalogue;
 
-    public function __construct(EvenementInterface $catalogue) {
+    public function __construct(EvenementServiceInterface $catalogue) {
         $this->catalogue = $catalogue;
     }
 
