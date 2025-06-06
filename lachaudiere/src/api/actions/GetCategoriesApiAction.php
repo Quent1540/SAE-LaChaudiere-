@@ -1,32 +1,32 @@
 <?php
-namespace gift\appli\api\actions;
+namespace lachaudiere\api\actions;
 
 use lachaudiere\application_core\application\useCases\EvenementInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class GetCategoriesApiAction {
-    private EvenementInterface $catalogue;
+    private EvenementInterface $evenement;
 
-    public function __construct(EvenementInterface $catalogue) {
-        $this->catalogue = $catalogue;
+    public function __construct(EvenementInterface $evenement) {
+        $this->evenement = $evenement;
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response {
-        $categories = $this->catalogue->getCategories();
+        $categories = $this->evenement->getCategories();
         $data = [
             'type' => 'collection',
             'count' => count($categories),
-            'categories' => array_map(function($cat) {
+            'categories' => array_map(function($event) {
                 return [
                     'categorie' => [
-                        'id' => $cat['id'],
-                        'libelle' => $cat['libelle'],
-                        'description' => $cat['description'],
+                        'id_categorie' => $event['id_categorie'],
+                        'libelle' => $event['libelle'],
+                        'description' => $event['description'],
                     ],
                     'links' => [
                         'self' => [
-                            'href' => '/categories/' . $cat['id'] . '/',
+                            'href' => '/categories/' . $event['id_categorie'] . '/',
                         ]
                     ]
                 ];
