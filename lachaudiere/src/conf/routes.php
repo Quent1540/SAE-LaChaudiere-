@@ -25,13 +25,14 @@ return function(App $app): App {
             'user' => $user
         ]);
 });
-    $app->map(['GET', 'POST'], '/categorie/create', AddCategorieAction::class);
+
 
 
     // METTRE LES ROUTES RESTREINTES ICI
     $app->group('', function (\Slim\Routing\RouteCollectorProxy $group) {
         $group->map(['GET','POST'], '/register', RegisterAction::class);
         $group->get('/categories', GetCategoriesAction::class);
+        $group->map(['GET', 'POST'], '/categorie/create', AddCategorieAction::class);
         $group->get('/categorie/{id}', GetCategorieParIdAction::class);
         $group->get('/admin/dashboard', DashboardAction::class)->setName('admin.dashboard');
         $group->get('/evenement/create', AddEvenementAction::class);
