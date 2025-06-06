@@ -5,17 +5,33 @@
 {% block content %}
     <h2>Créer un utilisateur admin</h2>
     {% if error %}
-        <p style="color:red;">{{ error }}</p>
+        <div style="color: red;">{{ error }}</div>
     {% endif %}
     {% if success %}
-        <p style="color:green;">{{ success }}</p>
+        <div style="color: green;">{{ success }}</div>
     {% endif %}
-    <form method="POST" action="">
-        <label>Email: <input type="email" name="email" required></label><br>
-        <label>Mot de passe: <input type="password" name="password" required></label><br>
-        <label>Confirmer le mot de passe: <input type="password" name="password_confirm" required></label><br>
+
+    <form method="POST" action="/register">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit">Créer</button>
+
+        <div class="form-group">
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" required 
+                value="{{ submitted_data.email|e }}">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe :</label>
+            <input type="password" id="password" name="password" required>
+            <small>Doit contenir au moins 8 caractères et une majuscule.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="password_confirm">Confirmer le mot de passe :</label>
+            <input type="password" id="password_confirm" name="password_confirm" required>
+        </div>
+
+        <button type="submit">Créer l'utilisateur</button>
     </form>
     <a href="/">Retour à l'accueil</a>
 {% endblock %}
