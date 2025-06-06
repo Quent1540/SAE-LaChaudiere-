@@ -1,7 +1,7 @@
 <?php
 namespace lachaudiere\webui\actions;
 
-use lachaudiere\application_core\application\useCases\CategoriesService;
+use lachaudiere\application_core\application\useCases\CategoriesServiceInterface;
 use lachaudiere\application_core\application\useCases\EvenementService;
 use lachaudiere\application_core\application\useCases\ImagesEvenementService;
 use lachaudiere\webui\providers\AuthnProvider;
@@ -17,10 +17,10 @@ class AddEvenementAction {
     protected $imagesEvenementService;
 
     public function __construct(
-        AuthnProvider $authProvider,
-        EvenementService $evenementService,
-        CategoriesService $categoriesService,
-        ImagesEvenementService $imagesEvenementService
+        AuthnProvider              $authProvider,
+        EvenementService           $evenementService,
+        CategoriesServiceInterface $categoriesService,
+        ImagesEvenementService     $imagesEvenementService
     ) {
         $this->authProvider = $authProvider;
         $this->evenementService = $evenementService;

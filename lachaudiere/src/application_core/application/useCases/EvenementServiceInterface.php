@@ -1,7 +1,7 @@
 <?php
 namespace lachaudiere\application_core\application\useCases;
 
-interface EvenementInterface {
+interface EvenementServiceInterface {
     public function getCategories(): array;
     public function getEvenements(): array;
     public function getEvenementsParCategorie(int $id): array;

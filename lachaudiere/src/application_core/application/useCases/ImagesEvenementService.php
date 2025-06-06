@@ -5,7 +5,7 @@ use lachaudiere\application_core\domain\entities\ImagesEvenement;
 use Illuminate\Database\QueryException;
 use Exception;
 
-class ImagesEvenementService
+class ImagesEvenementService implements ImagesEvenementServiceInterface
 {
     public function getImagesByEvenement(int $id_evenement): array
     {

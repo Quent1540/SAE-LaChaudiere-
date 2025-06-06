@@ -6,7 +6,7 @@ use lachaudiere\application_core\domain\entities\Categorie;
 use Illuminate\Database\QueryException;
 use lachaudiere\application_core\domain\entities\Evenement;
 
-class EvenementService implements EvenementInterface {
+class EvenementService implements EvenementServiceInterface {
     public function getCategories(): array {
         try {
             $result = Categorie::all();

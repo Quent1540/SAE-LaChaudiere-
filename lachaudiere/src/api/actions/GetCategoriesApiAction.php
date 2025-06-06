@@ -1,14 +1,14 @@
 <?php
 namespace lachaudiere\api\actions;
 
-use lachaudiere\application_core\application\useCases\EvenementInterface;
+use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class GetCategoriesApiAction {
-    private EvenementInterface $evenement;
+    private EvenementServiceInterface $evenement;
 
-    public function __construct(EvenementInterface $evenement) {
+    public function __construct(EvenementServiceInterface $evenement) {
         $this->evenement = $evenement;
     }
 
