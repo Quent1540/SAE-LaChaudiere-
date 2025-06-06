@@ -1,21 +1,29 @@
 {% extends "main.twig" %}
 
-{% block title %}Connexion{% endblock %}
+{% block title %}Connexion - Administration{% endblock %}
 
 {% block content %}
-    <h2>Connexion</h2>
+    <h2>Connexion Administration</h2>
+
     {% if error %}
-        <p style="color:red;">{{ error }}</p>
+        <p class="error">{{ error }}</p>
     {% endif %}
-    {% if success %}
-        <p style="color:green;">Connexion réussie!</p>
-    {% endif %}
-    <form method="POST" action="">
-        <label>Email: <input type="email" name="email" required></label><br>
-        <label>Mot de passe: <input type="password" name="password" required></label><br>
+
+    <form method="POST" action="{{ url_for('signin') }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit">Se connecter</button>
+
+        <div>
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" value="{{ submitted_email | default('') }}" required autofocus>
+        </div>
+
+        <div>
+            <label for="password">Mot de passe :</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <div>
+            <button type="submit">Se connecter</button>
+        </div>
     </form>
-    <a href="/register">Pas de compte? S'inscrire</a><br>
-    <a href="/">Retour à la page d'accueil</a><br>
 {% endblock %}

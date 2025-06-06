@@ -1,5 +1,5 @@
 <?php
-namespace lachaudiere\app\webui\providers; 
+namespace lachaudiere\webui\providers; 
 
 use lachaudiere\application_core\application\useCases\AuthnServiceInterface; 
 use lachaudiere\application_core\domain\entities\User;
