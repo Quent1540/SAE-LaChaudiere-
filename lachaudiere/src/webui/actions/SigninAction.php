@@ -50,7 +50,6 @@ class SigninAction {
             }
 
             $csrfToken = CsrfTokenProvider::generate();
-            $csrfToken = "test";
             return $this->view->render($response, 'signin.twig', [
                 'csrf_token' => $csrfToken,
                 'error' => $error ?? null,
@@ -62,8 +61,17 @@ class SigninAction {
             if ($this->authProvider->isSignedIn()) {
                 return $response->withHeader('Location', $router->urlFor('admin.dashboard'))->withStatus(302);
             }
-
+            
             $csrfToken = CsrfTokenProvider::generate();
+            if (isset($_SESSION['auth_message'])) {
+                $m_error = $_SESSION['auth_message'];
+                unset($_SESSION['auth_message']);
+                return $this->view->render($response, 'signin.twig', [
+                'csrf_token' => $csrfToken,
+                'error' => $m_error,
+            ]);
+            }
+            
             return $this->view->render($response, 'signin.twig', [
                 'csrf_token' => $csrfToken,
                 'error' => null,
