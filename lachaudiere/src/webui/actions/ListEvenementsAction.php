@@ -1,6 +1,7 @@
 <?php
 namespace lachaudiere\webui\actions;
 
+use lachaudiere\application_core\application\useCases\CategoriesServiceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Views\Twig;
@@ -8,18 +9,33 @@ use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 
 class ListEvenementsAction {
     private EvenementServiceInterface $evenementService;
+    private CategoriesServiceInterface $categorieService;
 
-    public function __construct(EvenementServiceInterface $evenementService) {
+    public function __construct(
+        EvenementServiceInterface $evenementService,
+        CategoriesServiceInterface $categorieService
+    ) {
         $this->evenementService = $evenementService;
+        $this->categorieService = $categorieService;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
-        $evenements = $this->evenementService->getEvenementsAvecCategorie();
+        $params = $request->getQueryParams();
+        $categories = $this->categorieService->getCategories();
+
+        $selected_categorie = null;
+        if (!empty($params['categorie'])) {
+            $selected_categorie = $this->categorieService->getCategorieById($params['categorie']);
+            $evenements = $this->evenementService->getEvenementsParCategorie($params['categorie']);
+        } else {
+            $evenements = $this->evenementService->getEvenementsAvecCategorie();
+        }
 
         $view = Twig::fromRequest($request);
         return $view->render($response, 'listeEvenements.twig', [
-            'evenements' => $evenements
+            'evenements' => $evenements,
+            'categories' => $categories,
+            'selected_categorie' => $selected_categorie
         ]);
     }
 }
-

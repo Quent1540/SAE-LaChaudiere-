@@ -6,4 +6,5 @@ use lachaudiere\application_core\domain\entities\Categorie;
 interface CategoriesServiceInterface
 {
     public function getCategories(): \Illuminate\Database\Eloquent\Collection;
+    public function getCategorieById(int $id_categorie): ?Categorie;
 }

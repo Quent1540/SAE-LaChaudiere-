@@ -9,4 +9,9 @@ class CategoriesService implements CategoriesServiceInterface
     {
         return Categorie::all();
     }
+
+    public function getCategorieById(int $id_categorie): ?Categorie
+    {
+        return Categorie::find($id_categorie);
+    }
 }
