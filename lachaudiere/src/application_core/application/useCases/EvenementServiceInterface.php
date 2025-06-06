@@ -6,4 +6,5 @@ interface EvenementServiceInterface {
     public function getEvenements(): array;
     public function getEvenementsParCategorie(int $id): array;
     public function getEvenementParId(int $id_evenement): array;
+    public function getEvenementsAvecCategorie(): array;
 }
