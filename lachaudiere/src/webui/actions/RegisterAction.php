@@ -63,12 +63,10 @@ class RegisterAction {
             }
         }
 
-        $csrfToken = CsrfTokenProvider::generate();
 
         return $this->view->render($response, 'register.twig', [
             'error' => $error,
             'success' => $success,
-            'csrf_token' => $csrfToken,
             'user' => $this->authProvider->getSignedInUser(),
             'submitted_data' => $submitted_data
         ]);

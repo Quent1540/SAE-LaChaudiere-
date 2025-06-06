@@ -25,13 +25,13 @@ class SigninAction {
 
         if ($request->getMethod() === 'POST') {
             $data = $request->getParsedBody();
+            $email = trim($data['email'] ?? ''); 
+            $password = $data['password'] ?? '';
             $submittedToken = $data['csrf_token'] ?? null;
 
             try {
 
                 CsrfTokenProvider::check($submittedToken);
-                $email = trim($data['email'] ?? ''); 
-                $password = $data['password'] ?? '';
 
                 if (empty($email) || empty($password)) {
                     throw new \InvalidArgumentException("Email et mot de passe sont requis.");
@@ -50,9 +50,7 @@ class SigninAction {
                 $error = $e->getMessage(); 
             }
 
-            $csrfToken = CsrfTokenProvider::generate();
             return $this->view->render($response, 'signin.twig', [
-                'csrf_token' => $csrfToken,
                 'error' => $error ?? null,
                 'submitted_email' => $email,
             ]);
@@ -63,18 +61,15 @@ class SigninAction {
                 return $response->withHeader('Location', $router->urlFor('admin.dashboard'))->withStatus(302);
             }
             
-            $csrfToken = CsrfTokenProvider::generate();
             if (isset($_SESSION['auth_message'])) {
                 $m_error = $_SESSION['auth_message'];
                 unset($_SESSION['auth_message']);
                 return $this->view->render($response, 'signin.twig', [
-                'csrf_token' => $csrfToken,
                 'error' => $m_error,
             ]);
             }
             
             return $this->view->render($response, 'signin.twig', [
-                'csrf_token' => $csrfToken,
                 'error' => null,
             ]);
         }

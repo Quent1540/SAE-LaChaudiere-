@@ -4,7 +4,7 @@
 <h2>Créer un événement</h2>
 
 <form method="post" enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    {{ csrf_input() }}
     <div>
         <label for="titre">Titre de l'événement :</label>
         <input type="text" id="titre" name="titre" required>
@@ -55,6 +55,7 @@
     </div>
 
     <button type="submit" class="button-modern">Créer</button>
+    <a href="/" class="button-modern">Retour à l'accueil</a>
 </form>
 
 {% endblock %}

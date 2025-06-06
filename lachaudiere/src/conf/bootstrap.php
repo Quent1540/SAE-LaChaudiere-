@@ -9,53 +9,57 @@ use Slim\Views\Twig;
 use lachaudiere\infrastructure\Eloquent;
 use lachaudiere\webui\providers\AuthnProviderInterface;
 use lachaudiere\webui\providers\AuthnProvider;
+use lachaudiere\webui\providers\CsrfTokenProvider;
 use lachaudiere\application_core\application\useCases\AuthnServiceInterface;
 use lachaudiere\application_core\application\useCases\AuthnService;
 use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
-use lachaudiere\application_core\domain\entities\Evenement;
+use lachaudiere\application_core\application\useCases\EvenementService;
+use lachaudiere\application_core\application\useCases\CategoriesServiceInterface;
+use lachaudiere\application_core\application\useCases\CategoriesService;
+use lachaudiere\application_core\application\useCases\ImagesEvenementServiceInterface;
+use lachaudiere\application_core\application\useCases\ImagesEvenementService;
+use lachaudiere\webui\middleware\AuthMiddleware;
+use Psr\Container\ContainerInterface;
 
-// Création du conteneur
 $container = new Container();
 AppFactory::setContainer($container);
 
-// Chargement de l'ORM Eloquent
 require_once __DIR__ . '/../infrastructure/Eloquent.php';
 Eloquent::init(__DIR__ . '/gift.db.conf.ini');
 
-// Création de l'application
+
 $app = AppFactory::create();
 
-// Initialisation de Twig
 $twig = Twig::create(__DIR__ . '/../webui/views', [
     'cache' => false,
     'auto_reload' => true,
 ]);
+
+$twigEnvironment = $twig->getEnvironment();
+
+$csrfFunction = new \Twig\TwigFunction('csrf_input', function () {
+    $token = CsrfTokenProvider::generate();
+    return new \Twig\Markup('<input type="hidden" name="csrf_token" value="' . $token . '">', 'UTF-8');
+}, ['is_safe' => ['html']]);
+$twigEnvironment->addFunction($csrfFunction);
+
+
 $app->add(\Slim\Views\TwigMiddleware::create($app, $twig));
 
-// Middleware Slim
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, true, true);
 
-// Enregistrements des services dans le conteneur DI
-
-$app->getContainer()->set(
-    \lachaudiere\application_core\application\useCases\EvenementServiceInterface::class,
-    function() {
-        return new \lachaudiere\application_core\application\useCases\EvenementService();
-    }
-);
+$container->set(EvenementServiceInterface::class, fn() => new EvenementService());
+$container->set(CategoriesServiceInterface::class, fn() => new CategoriesService());
+$container->set(ImagesEvenementServiceInterface::class, fn() => new ImagesEvenementService());
 $container->set(AuthnServiceInterface::class, fn() => new AuthnService());
 $container->set(AuthnProviderInterface::class, fn($c) => new AuthnProvider($c->get(AuthnServiceInterface::class)));
-
+$container->set(\Slim\Views\Twig::class, fn() => $twig);
 $container->set(AuthMiddleware::class, function (ContainerInterface $c) {
     $authProvider = $c->get(AuthnProviderInterface::class);
     return new AuthMiddleware($authProvider);
 });
 
-// Twig pour injection dans les actions
-$container->set(Twig::class, fn() => $twig);
-
-// Chargement des routes (Web UI et API)
 $app = (require __DIR__ . '/routes.php')($app);
 $app = (require __DIR__ . '/../api/routes.php')($app);
 

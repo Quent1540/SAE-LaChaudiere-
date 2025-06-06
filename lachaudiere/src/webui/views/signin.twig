@@ -13,8 +13,7 @@
     {% endif %}
 
     <form method="POST" action="{{ url_for('signin') }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
+        {{ csrf_input() }}
         <div>
             <label for="email">Email :</label>
             <input type="email" id="email" name="email" value="{{ submitted_email | default('') }}" required autofocus>

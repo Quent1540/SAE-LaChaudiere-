@@ -35,9 +35,7 @@ class AddEvenementAction {
         $categories = $this->categoriesService->getCategories();
 
         if ($method === 'GET') {
-            $csrf_token = CsrfTokenProvider::generate();
             return $view->render($response, 'creerEvenement.twig', [
-                'csrf_token' => $csrf_token,
                 'categories' => $categories
             ]);
         }
