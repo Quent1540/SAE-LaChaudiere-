@@ -5,6 +5,7 @@ use lachaudiere\webui\actions\AddEvenementAction;
 use lachaudiere\webui\actions\AddCategorieAction;
 use lachaudiere\webui\actions\GetCategorieParIdAction;
 use lachaudiere\webui\actions\GetCategoriesAction;
+use lachaudiere\webui\actions\ListeEvenementsAction;
 use lachaudiere\webui\actions\RegisterAction;
 use lachaudiere\webui\actions\SignoutAction;
 use lachaudiere\webui\actions\DashboardAction;
@@ -35,6 +36,8 @@ return function(App $app): App {
         $group->get('/categorie/{id}', GetCategorieParIdAction::class);
         $group->get('/admin/dashboard', DashboardAction::class)->setName('admin.dashboard');
         $group->get('/evenement/create', AddEvenementAction::class);
+        $group->get('/evenements', ListeEvenementsAction::class)->setName('evenements.liste');
+        //$group->get('/evenements/categorie/{id}', ListeEvenementsParCategorieAction::class)->setName('evenements.liste.categorie');
     })->add(AuthMiddleware::class);
 
     return $app;
