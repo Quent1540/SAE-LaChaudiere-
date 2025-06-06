@@ -6,6 +6,11 @@ use lachaudiere\webui\actions\RegisterAction;
 use lachaudiere\webui\actions\SignoutAction;
 use lachaudiere\webui\actions\DashboardAction;
 use lachaudiere\webui\providers\AuthnProviderInterface;
+use lachaudiere\webui\actions\AddEvenementAction;
+use lachaudiere\webui\actions\GetCategorieParIdAction;
+use lachaudiere\webui\actions\GetCategoriesAction;
+use lachaudiere\webui\actions\RegisterAction;
+use lachaudiere\webui\actions\SignoutAction;
 use Slim\App;
 use lachaudiere\webui\actions\SigninAction;
 
@@ -30,9 +35,9 @@ return function(App $app): App {
 });
     $app->get('/coffrets', \lachaudiere\appli\webui\actions\GetCoffretsAction::class);
     $app->get('/coffret/{id}', \lachaudiere\appli\webui\actions\GetCoffretDetailAction::class);
-    $app->map(['GET', 'POST'], '/box/create', \lachaudiere\appli\webui\actions\AddEvenementAction::class);
+    $app->map(['GET', 'POST'], '/box/create', AddEvenementAction::class);
     $app->get('/coffret/{coffret_id}/prestation/{id}', \lachaudiere\appli\webui\actions\GetPrestationCoffretAction::class);
-    $app->post('/box/prestation/add', \lachaudiere\appli\webui\actions\AddEvenementAction::class);
+    $app->post('/box/prestation/add', AddEvenementAction::class);
     $app->get('/box/courante', \lachaudiere\appli\webui\actions\GetBoxCouranteAction::class);
     $app->get('/evenement/create', AddEvenementAction::class);
     return $app;

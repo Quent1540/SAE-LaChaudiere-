@@ -1,9 +1,9 @@
 {% extends "main.twig" %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}Créer un utilisateur admin{% endblock %}
 
 {% block content %}
-    <h2>Inscription</h2>
+    <h2>Créer un utilisateur admin</h2>
     {% if error %}
         <p style="color:red;">{{ error }}</p>
     {% endif %}
@@ -15,8 +15,7 @@
         <label>Mot de passe: <input type="password" name="password" required></label><br>
         <label>Confirmer le mot de passe: <input type="password" name="password_confirm" required></label><br>
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit">S'inscrire</button>
+        <button type="submit">Créer</button>
     </form>
-    <a href="/signin">Déjà inscrit? Se connecter</a><br>
     <a href="/">Retour à l'accueil</a>
 {% endblock %}

@@ -1,13 +1,13 @@
 <?php
-namespace lachaudiere\application_core\application\useCases; 
+namespace lachaudiere\application_core\application\useCases;
 
-use lachaudiere\application_core\domain\entities\User; 
+use lachaudiere\application_core\domain\entities\User;
 use Ramsey\Uuid\Uuid;
 use lachaudiere\application_core\application\exceptions\UserAlreadyExistsException;
 use lachaudiere\application_core\application\exceptions\InvalidCredentialsException;
 
-class AuthnService implements AuthnServiceInterface {
-
+class AuthnService implements AuthnServiceInterface
+{
     public function register(string $email, string $password, int $role = 1): bool
     {
         if (User::query()->where('email', $email)->exists()) {
