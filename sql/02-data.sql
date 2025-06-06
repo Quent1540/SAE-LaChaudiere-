@@ -6,7 +6,6 @@ TRUNCATE TABLE `evenements`;
 TRUNCATE TABLE `categories`;
 TRUNCATE TABLE `utilisateurs`;
 
-
 -- Pour 'superadmin@lachaudiere.fr', le mot de passe en clair était 'superadmin_secret'
 -- Pour 'admin.concerts@lachaudiere.fr', le mot de passe en clair était 'admin123'
 -- Pour 'admin.expos@lachaudiere.fr', le mot de passe en clair était 'moderator_pass'

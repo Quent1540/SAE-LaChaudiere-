@@ -1,8 +1,9 @@
 <?php
-namespace lachaudiere\app\webui\providers; 
+namespace lachaudiere\webui\providers;
 
 use lachaudiere\application_core\application\useCases\AuthnServiceInterface; 
 use lachaudiere\application_core\domain\entities\User;
+use lachaudiere\webui\providers\AuthnProviderInterface;
 
 class AuthnProvider implements AuthnProviderInterface {
     protected AuthnServiceInterface $authnService;
@@ -19,6 +20,13 @@ class AuthnProvider implements AuthnProviderInterface {
             return null;
         }
         return User::query()->find($_SESSION['user_id']);
+    }
+
+    public function getRoleUser(): ?int {
+        if (!isset($_SESSION['user_id'])) {
+            return null;
+        }
+        return User::query()->find($_SESSION['user_id'])->role ?? null;
     }
 
     public function signin(string $email, string $password): bool {
