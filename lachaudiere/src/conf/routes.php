@@ -23,7 +23,7 @@ return function(App $app): App {
         return $view->render($response, 'home.twig', [
             'user' => $user
         ]);
-    });
+    })->setName("home");
 
     // METTRE LES ROUTES RESTREINTES ICI
     $app->group('', function (\Slim\Routing\RouteCollectorProxy $group) {

@@ -9,6 +9,7 @@ use Slim\Views\Twig;
 use lachaudiere\infrastructure\Eloquent;
 use lachaudiere\webui\providers\AuthnProviderInterface;
 use lachaudiere\webui\providers\AuthnProvider;
+use lachaudiere\webui\providers\CsrfTokenProvider;
 use lachaudiere\application_core\application\useCases\AuthnServiceInterface;
 use lachaudiere\application_core\application\useCases\AuthnService;
 use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
@@ -30,6 +31,16 @@ $twig = Twig::create(__DIR__ . '/../webui/views', [
     'cache' => false,
     'auto_reload' => true,
 ]);
+
+$twigEnvironment = $twig->getEnvironment();
+
+$csrfFunction = new \Twig\TwigFunction('csrf_input', function () {
+    $token = CsrfTokenProvider::generate();
+    return new \Twig\Markup('<input type="hidden" name="csrf_token" value="' . $token . '">', 'UTF-8');
+}, ['is_safe' => ['html']]);
+$twigEnvironment->addFunction($csrfFunction);
+
+
 $app->add(\Slim\Views\TwigMiddleware::create($app, $twig));
 
 // Middleware Slim
