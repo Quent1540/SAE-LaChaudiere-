@@ -15,7 +15,6 @@ use lachaudiere\webui\middleware\AuthMiddleware;
 return function(App $app): App {
     $app->map(['GET','POST'], '/signin', SigninAction::class)->setName('signin');
     $app->post('/signout', SignoutAction::class);
-    $app->map(['GET','POST'], '/register', RegisterAction::class);
     $app->get('/', function ($request, $response, $args) use ($app) {
         $container = $app->getContainer();
         $authProvider = $container->get(AuthnProviderInterface::class);
@@ -28,6 +27,7 @@ return function(App $app): App {
 
     // METTRE LES ROUTES RESTREINTES ICI
     $app->group('', function (\Slim\Routing\RouteCollectorProxy $group) {
+        $group->map(['GET','POST'], '/register', RegisterAction::class);
         $group->get('/categories', GetCategoriesAction::class);
         $group->get('/categorie/{id}', GetCategorieParIdAction::class);
         $group->get('/coffrets', \lachaudiere\appli\webui\actions\GetCoffretsAction::class);

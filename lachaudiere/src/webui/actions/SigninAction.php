@@ -26,18 +26,19 @@ class SigninAction {
         if ($request->getMethod() === 'POST') {
             $data = $request->getParsedBody();
             $submittedToken = $data['csrf_token'] ?? null;
-            $email = trim($data['email'] ?? ''); 
-            $password = $data['password'] ?? '';
 
             try {
+
                 CsrfTokenProvider::check($submittedToken);
+                $email = trim($data['email'] ?? ''); 
+                $password = $data['password'] ?? '';
 
                 if (empty($email) || empty($password)) {
                     throw new \InvalidArgumentException("Email et mot de passe sont requis.");
                 }
 
                 if ($this->authProvider->signin($email, $password)) {
-                    return $response->withHeader('Location', $router->urlFor('admin.dashboard'))->withStatus(302);
+                    return $response->withHeader('Location', $router->urlFor('home'))->withStatus(302);
                 } else {
                     throw new \Exception("Identifiants incorrects.");
                 }
