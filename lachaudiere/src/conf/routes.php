@@ -2,12 +2,13 @@
 declare(strict_types=1);
 
 use lachaudiere\webui\actions\AddEvenementAction;
+use lachaudiere\webui\actions\AddCategorieAction;
+use lachaudiere\webui\actions\GetCategorieParIdAction;
+use lachaudiere\webui\actions\GetCategoriesAction;
 use lachaudiere\webui\actions\RegisterAction;
 use lachaudiere\webui\actions\SignoutAction;
 use lachaudiere\webui\actions\DashboardAction;
 use lachaudiere\webui\providers\AuthnProviderInterface;
-use lachaudiere\webui\actions\GetCategorieParIdAction;
-use lachaudiere\webui\actions\GetCategoriesAction;
 use Slim\App;
 use lachaudiere\webui\actions\SigninAction;
 use lachaudiere\webui\middleware\AuthMiddleware;
@@ -23,7 +24,9 @@ return function(App $app): App {
         return $view->render($response, 'home.twig', [
             'user' => $user
         ]);
-    });
+});
+    $app->map(['GET', 'POST'], '/categorie/create', AddCategorieAction::class);
+
 
     // METTRE LES ROUTES RESTREINTES ICI
     $app->group('', function (\Slim\Routing\RouteCollectorProxy $group) {
