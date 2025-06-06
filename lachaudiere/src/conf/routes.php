@@ -24,13 +24,14 @@ return function(App $app): App {
         return $view->render($response, 'home.twig', [
             'user' => $user
         ]);
-})->setName("home");
+    })->setName("home");
 
 
     // METTRE LES ROUTES RESTREINTES ICI
     $app->group('', function (\Slim\Routing\RouteCollectorProxy $group) {
         $group->map(['GET','POST'], '/register', RegisterAction::class);
         $group->get('/categories', GetCategoriesAction::class);
+        $group->map(['GET', 'POST'], '/categorie/create', AddCategorieAction::class);
         $group->get('/categorie/{id}', GetCategorieParIdAction::class);
         $group->get('/admin/dashboard', DashboardAction::class)->setName('admin.dashboard');
         $group->get('/evenement/create', AddEvenementAction::class);
