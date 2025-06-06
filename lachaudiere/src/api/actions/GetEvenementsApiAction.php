@@ -13,6 +13,8 @@ class GetEvenementsApiAction {
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response {
+        $params = $request->getQueryParams();
+        $sort = $params['sort'] ?? '';
         $periodes = explode(',', $request->getQueryParams()['periode'] ?? '');
         $now = date('Y-m-d H:i:s');
         $evenements = $this->evenement->getEvenements();
@@ -27,10 +29,33 @@ class GetEvenementsApiAction {
                 return false;
             });
         }
-        //Pour trier par date de début
-        usort($evenements, function($a, $b) {
-            return strtotime($a['date_debut']) <=> strtotime($b['date_debut']);
-        });
+        //Tri optionnel selon le paramètre sort
+        //Tri par date date de début ascendante
+        if ($sort === 'date-asc') {
+            usort($evenements, function($a, $b) {
+                return strtotime($a['date_debut']) <=> strtotime($b['date_debut']);
+            });
+        //Tri par date de début descendante
+        } elseif ($sort === 'date-desc') {
+            usort($evenements, function($a, $b) {
+                return strtotime($a['date_debut']) <=> strtotime($b['date_debut']);
+            });
+        //Tri par titre
+        } elseif ($sort === 'titre') {
+            usort($evenements, function($a, $b) {
+                return strcmp($a['titre'], $b['titre']);
+            });
+        //Tri par catégorie
+        } elseif ($sort === 'categorie') {
+            usort($evenements, function($a, $b) {
+                return $a['id_categorie'] <=> $b['id_categorie'];
+            });
+        } else {
+            //Tri par défaut (date asc)
+            usort($evenements, function($a, $b) {
+                return strtotime($a['date_debut']) <=> strtotime($b['date_debut']);
+            });
+        }
         $data = [
             'type' => 'collection',
             'count' => count($evenements),
