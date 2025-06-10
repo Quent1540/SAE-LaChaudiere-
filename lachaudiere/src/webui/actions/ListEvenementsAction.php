@@ -20,14 +20,22 @@ class ListEvenementsAction {
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
+        $params = $request->getQueryParams();
         $categories = $this->categorieService->getCategories();
-        $evenements = $this->evenementService->getEvenementsAvecCategorie();
+
+        $selected_categorie = null;
+        if (!empty($params['categorie'])) {
+            $selected_categorie = $this->categorieService->getCategorieById($params['categorie']);
+            $evenements = $this->evenementService->getEvenementsParCategorie($params['categorie']);
+        } else {
+            $evenements = $this->evenementService->getEvenementsAvecCategorie();
+        }
 
         $view = Twig::fromRequest($request);
         return $view->render($response, 'listeEvenements.twig', [
             'evenements' => $evenements,
             'categories' => $categories,
-            'selected_categorie' => null
+            'selected_categorie' => $selected_categorie
         ]);
     }
 }
