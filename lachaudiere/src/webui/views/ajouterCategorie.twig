@@ -8,6 +8,7 @@
 {% endif %}
 
 <form method="post" action="/categorie/create">
+    {{ csrf_input() }}
     <div>
         <label for="libelle">Libellé :</label>
         <input type="text" id="libelle" name="libelle" required>
