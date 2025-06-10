@@ -12,6 +12,10 @@ class Evenement extends Model {
     public function categorie() {
         return $this->belongsTo(Categorie::class, 'id_categorie');
     }
+
+    public function images() {
+        return $this->hasOne(ImagesEvenement::class, 'id_evenement');
+    }
 }
 
 
