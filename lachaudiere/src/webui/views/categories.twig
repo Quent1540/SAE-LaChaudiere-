@@ -7,14 +7,17 @@
     <ul>
         {% for categ in categories %}
             <li>
-                <a href="/categorie/{{ categ.id }}">
-                    ID: {{ categ.id }} - Libellé: {{ categ.libelle }}
+                <p>L’id est {{ categ.id_categorie }}</p>
+
+                <a href="{{ url_for('categorie', { 'id': categ.id_categorie }) }}">
+                    ID : {{ categ.id_categorie }} – Libellé : {{ categ.libelle }}
                 </a>
             </li>
         {% else %}
             <li>Aucune catégorie trouvée.</li>
         {% endfor %}
-        <br>
-            <a href="/">Retour à la page d'accueil</a>
     </ul>
+
+    <br>
+    <a href="{{ url_for('home') }}">Retour à la page d’accueil</a>
 {% endblock %}
