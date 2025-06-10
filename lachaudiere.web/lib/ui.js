@@ -1,14 +1,5 @@
 //Affichage de la catégorie de l'image
 import {url} from "./config.js";
-
-export const displayCategory = (category) => {
-    //Charger et compiler le template
-    const templateSource = document.querySelector('#categoryTemplate').innerHTML;
-    const template = Handlebars.compile(templateSource);
-    const categoryContainer = document.querySelector('#la_categorie');
-    categoryContainer.innerHTML = template({nom: category.categorie.nom, description: category.categorie.descr});
-};
-
 //Affichage des événements courants
 export async function displayEventsMoisCourant() {
     const response = await fetch(`${url}/api/evenements`);
@@ -30,12 +21,10 @@ export async function displayEventsMoisCourant() {
     const template = Handlebars.compile(source);
     document.getElementById('event-list').innerHTML = template({events: filtered});
 }
-import { url } from './config.js';
 
 //Affichage de la liste des catégories
 export async function afficherCategories() {
     const container = document.getElementById('categories-list');
-    container.innerHTML = 'Chargement...';
     fetch(`${url}/api/categories`)
         .then(res => res.json())
         .then(data => {

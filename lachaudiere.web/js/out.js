@@ -39,12 +39,9 @@
       document.getElementById("event-list").innerHTML = template({ events: filtered });
     });
   }
-
-  // index.js
   function afficherCategories() {
     return __async(this, null, function* () {
       const container = document.getElementById("categories-list");
-      container.innerHTML = "Chargement...";
       fetch(`${url}/api/categories`).then((res) => res.json()).then((data) => {
         container.innerHTML = "";
         data.categories.forEach((cat) => {
@@ -64,10 +61,9 @@
       });
     });
   }
-  afficherCategories();
-  displayEventsMoisCourant();
 
   // index.js
   window.addEventListener("DOMContentLoaded", afficherCategories);
+  window.addEventListener("DOMContentLoaded", displayEventsMoisCourant());
 })();
 //# sourceMappingURL=out.js.map
