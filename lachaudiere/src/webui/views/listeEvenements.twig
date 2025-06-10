@@ -25,6 +25,8 @@
                 <th>Titre</th>
                 <th>Catégorie</th>
                 <th>Dates</th>
+                <th>Statut</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -38,11 +40,25 @@
                             - {{ evenement.date_fin|date('d/m/Y H:i') }}
                         {% endif %}
                     </td>
-                    <td><img src="{{ evenement.url_image }}" alt="{{ evenement.titre }}">
+                    <td>
+                        {% if evenement.est_publie %}
+                            <span style="color:green; font-weight:bold;">Publié</span>
+                        {% else %}
+                            <span style="color:red;">Non Publié</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{{ url_for('toggle-publish-event', {'id': evenement.id_evenement}) }}" method="post" style="margin:0;">
+                            {{ csrf_input() }}
+                            <button type="submit">
+                                {% if evenement.est_publie %}Dépublier{% else %}Publier{% endif %}
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">Aucun événement trouvé.</td>
+                    <td colspan="5">Aucun événement trouvé.</td>
                 </tr>
             {% endfor %}
         </tbody>

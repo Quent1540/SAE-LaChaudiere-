@@ -14,7 +14,7 @@ class Evenement extends Model {
     }
 
     public function images() {
-        return $this->hasOne(ImagesEvenement::class, 'id_evenement');
+        return $this->hasMany(ImagesEvenement::class, 'id_evenement');
     }
 }
 

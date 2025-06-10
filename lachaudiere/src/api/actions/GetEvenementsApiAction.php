@@ -17,8 +17,10 @@ class GetEvenementsApiAction {
         $sort = $params['sort'] ?? '';
         $periodes = explode(',', $request->getQueryParams()['periode'] ?? '');
         $now = date('Y-m-d H:i:s');
-        $evenements = $this->evenement->getEvenements();
-        //Filtrer les événements selon les périodes demandées
+
+        $allEvenements = $this->evenement->getEvenements();
+        $evenements = array_filter($allEvenements, fn($e) => $e['est_publie']);
+
         if ($periodes && $periodes[0] !== '') {
             $evenements = array_filter($evenements, function($event) use ($periodes, $now) {
                 foreach ($periodes as $periode) {
@@ -29,33 +31,15 @@ class GetEvenementsApiAction {
                 return false;
             });
         }
-        //Tri optionnel selon le paramètre sort
-        //Tri par date date de début ascendante
+        
         if ($sort === 'date-asc') {
-            usort($evenements, function($a, $b) {
-                return strtotime($a['date_debut']) <=> strtotime($b['date_debut']);
-            });
-        //Tri par date de début descendante
+            usort($evenements, fn($a, $b) => strtotime($a['date_debut']) <=> strtotime($b['date_debut']));
         } elseif ($sort === 'date-desc') {
-            usort($evenements, function($a, $b) {
-                return strtotime($a['date_debut']) <=> strtotime($b['date_debut']);
-            });
-        //Tri par titre
+            usort($evenements, fn($a, $b) => strtotime($b['date_debut']) <=> strtotime($a['date_debut']));
         } elseif ($sort === 'titre') {
-            usort($evenements, function($a, $b) {
-                return strcmp($a['titre'], $b['titre']);
-            });
-        //Tri par catégorie
-        } elseif ($sort === 'categorie') {
-            usort($evenements, function($a, $b) {
-                return $a['id_categorie'] <=> $b['id_categorie'];
-            });
-        } else {
-            //Tri par défaut (date asc)
-            usort($evenements, function($a, $b) {
-                return strtotime($a['date_debut']) <=> strtotime($b['date_debut']);
-            });
+            usort($evenements, fn($a, $b) => strcmp($a['titre'], $b['titre']));
         }
+
         $data = [
             'type' => 'collection',
             'count' => count($evenements),
@@ -64,21 +48,17 @@ class GetEvenementsApiAction {
                     'evenement' => [
                         'titre' => $event['titre'],
                         'date_debut' => $event['date_debut'],
-                        'date_fin' => $event['date_fin'],
-                        'id_categorie' => $event['id_categorie'],
+                        'images' => array_map(fn($img) => ['url' => $img['url_image'], 'legende' => $img['legende']], $event['images'] ?? [])
                     ],
                     'links' => [
-                        'self' => [
-                            'href' => '/evenements/' . $event['id_evenement'] . '/',
-                        ]
+                        'self' => ['href' => '/api/evenements/' . $event['id_evenement']]
                     ]
                 ];
-            }, $evenements)
+            }, array_values($evenements))
         ];
-        $response->getBody()->write(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-        return $response
-            ->withHeader('Content-Type', 'application/json; charset=utf-8')
-            ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withStatus(200);
+
+        $response->getBody()->write(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        return $response->withHeader('Content-Type', 'application/json; charset=utf-8')
+                         ->withHeader('Access-Control-Allow-Origin', '*');
     }
 }
