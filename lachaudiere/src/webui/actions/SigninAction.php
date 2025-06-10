@@ -58,7 +58,7 @@ class SigninAction {
         } else {
 
             if ($this->authProvider->isSignedIn()) {
-                return $response->withHeader('Location', $router->urlFor('admin.dashboard'))->withStatus(302);
+                return $response->withHeader('Location', $router->urlFor('home'))->withStatus(302);
             }
             
             if (isset($_SESSION['auth_message'])) {

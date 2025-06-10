@@ -11,7 +11,6 @@ use lachaudiere\webui\actions\GetCategoriesAction;
 use lachaudiere\webui\actions\ListEvenementsAction;
 use lachaudiere\webui\actions\RegisterAction;
 use lachaudiere\webui\actions\SignoutAction;
-use lachaudiere\webui\actions\DashboardAction;
 use lachaudiere\webui\providers\AuthnProviderInterface;
 use Slim\App;
 use lachaudiere\webui\actions\SigninAction;
@@ -38,7 +37,6 @@ return function(App $app): App {
         $group->get('/categorie/show', AddCategorieFormAction::class);
         $group->post('/categorie/create', AddCategorieAction::class);
         $group->get('/categorie/{id}', GetCategorieParIdAction::class)->setName('categorie');
-        $group->get('/admin/dashboard', DashboardAction::class)->setName('admin.dashboard');
         $group->post('/evenement/create', AddEvenementAction::class);
         $group->get('/evenement/show', AddEvenementFormAction::class);
         $group->get('/evenements', ListEvenementsAction::class);
