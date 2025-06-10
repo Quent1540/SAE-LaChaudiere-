@@ -7,3 +7,6 @@ Thumbs.db
 lachaudiere/src/views/cache/
 composer.lock
 db_data/
+package-lock.json
+js/out.js
+/node_modules/
