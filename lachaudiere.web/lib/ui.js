@@ -1,10 +1,27 @@
-import Handlebars from "handlebars";
+import { url } from './config.js';
 
-//Affichage de la catégorie de l'image
-export const displayCategory = (category) => {
-    //Charger et compiler le template
-    const templateSource = document.querySelector('#categoryTemplate').innerHTML;
-    const template = Handlebars.compile(templateSource);
-    const categoryContainer = document.querySelector('#la_categorie');
-    categoryContainer.innerHTML = template({nom: category.categorie.nom, description: category.categorie.descr});
-};
+//Affichage de la liste des catégories
+export async function afficherCategories() {
+    const container = document.getElementById('categories-list');
+    container.innerHTML = 'Chargement...';
+    fetch(`${url}/api/categories`)
+        .then(res => res.json())
+        .then(data => {
+            container.innerHTML='';
+            data.categories.forEach(cat => {
+                const c = cat.categorie;
+                const lien = document.createElement('a');
+                lien.href = "#";
+                lien.textContent = c.libelle;
+                lien.style.display = "block";
+                lien.onclick = (e) => {
+                    e.preventDefault();
+                    afficherEvenementsParCategorie(c.id_categorie);
+                };
+                container.appendChild(lien);
+            });
+        })
+        .catch(err => {
+            document.getElementById('categories-list').textContent = "Erreur lors du chargement des catégories";
+        });
+}
