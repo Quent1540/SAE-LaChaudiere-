@@ -7,7 +7,7 @@
     "dev": "esbuild index.js --bundle  --sourcemap --target=es2015 --outfile=js/out.js --watch",
     "build": "esbuild index.js --bundle  --sourcemap --target=es2015 --outfile=js/out.js"
   },
-  "name": "projet_photobox",
+  "name": "lachaudiere.web",
   "version": "1.0.0",
   "main": "index.js",
   "directories": {
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Quent1540/Projet_Photobox.git"
+    "url": "git+https://github.com/Quent1540/SAE-LaChaudiere-.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Quent1540/Projet_Photobox/issues"
+    "url": "https://github.com/Quent1540/SAE-LaChaudiere-/issues"
   },
-  "homepage": "https://github.com/Quent1540/Projet_Photobox#readme",
+  "homepage": "https://github.com/Quent1540/SAE-LaChaudiere-#readme",
   "description": ""
 }
