@@ -6,6 +6,7 @@ use lachaudiere\webui\actions\AddEvenementAction;
 use lachaudiere\webui\actions\AddCategorieAction;
 use lachaudiere\webui\actions\AddEvenementFormAction;
 use lachaudiere\webui\actions\GetCategorieParIdAction;
+use lachaudiere\webui\actions\TogglePublishAction;
 use lachaudiere\webui\actions\GetCategoriesAction;
 
 use lachaudiere\webui\actions\ListEvenementsAction;
@@ -39,7 +40,8 @@ return function(App $app): App {
         $group->get('/categorie/{id}', GetCategorieParIdAction::class)->setName('categorie');
         $group->post('/evenement/create', AddEvenementAction::class);
         $group->get('/evenement/show', AddEvenementFormAction::class);
-        $group->get('/evenements', ListEvenementsAction::class);
+        $group->get('/evenements', ListEvenementsAction::class)->setName('list_evenements');
+        $group->post('/evenement/{id}/toggle-publish', TogglePublishAction::class)->setName('toggle-publish-event');
     })->add(AuthMiddleware::class);
 
     return $app;
