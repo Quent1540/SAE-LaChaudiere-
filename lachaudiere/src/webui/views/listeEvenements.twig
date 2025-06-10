@@ -8,8 +8,11 @@
         <select name="categorie" id="categorie" onchange="this.form.submit()">
             <option value="">Toutes</option>
             {% for c in categories %}
-                <option value="{{ c.id }}"
-                    {% if selected_categorie and c.id == selected_categorie.id %}selected{% endif %}>
+                <option value="{{ c.id_categorie }}"
+                        {% if selected_categorie is not null
+                        and c.id_categorie == attribute(selected_categorie, 'id_categorie') %}
+                            selected
+                        {% endif %}>
                     {{ c.libelle }}
                 </option>
             {% endfor %}
