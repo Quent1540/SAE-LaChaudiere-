@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
+use lachaudiere\webui\actions\AddCategorieFormAction;
 use lachaudiere\webui\actions\AddEvenementAction;
 use lachaudiere\webui\actions\AddCategorieAction;
+use lachaudiere\webui\actions\AddEvenementFormAction;
 use lachaudiere\webui\actions\GetCategorieParIdAction;
 use lachaudiere\webui\actions\GetCategoriesAction;
 
@@ -33,10 +35,12 @@ return function(App $app): App {
     $app->group('', function (\Slim\Routing\RouteCollectorProxy $group) {
         $group->map(['GET','POST'], '/register', RegisterAction::class);
         $group->get('/categories', GetCategoriesAction::class);
-        $group->map(['GET', 'POST'], '/categorie/create', AddCategorieAction::class);
+        $group->get('/categorie/show', AddCategorieFormAction::class);
+        $group->post('/categorie/create', AddCategorieAction::class);
         $group->get('/categorie/{id}', GetCategorieParIdAction::class);
         $group->get('/admin/dashboard', DashboardAction::class)->setName('admin.dashboard');
-        $group->get('/evenement/create', AddEvenementAction::class);
+        $group->post('/evenement/create', AddEvenementAction::class);
+        $group->get('/evenement/show', AddEvenementFormAction::class);
         $group->get('/evenements', ListEvenementsAction::class);
     })->add(AuthMiddleware::class);
 

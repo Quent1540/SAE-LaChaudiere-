@@ -12,24 +12,22 @@ class AddCategorieAction {
         $data = $request->getParsedBody();
         $erreur = null;
 
-        if ($request->getMethod() === 'POST') {
-            $libelle = trim($data['libelle'] ?? '');
-            $description = trim($data['description'] ?? '');
+        $libelle = trim($data['libelle'] ?? '');
+        $description = trim($data['description'] ?? '');
 
-            if (empty($libelle)) {
-                $erreur = "Le libellé est requis.";
-            } else {
-                try {
-                    Categorie::create([
-                        'libelle' => $libelle,
-                        'description' => $description, // markdown brut
-                    ]);
-                    return $response
-                        ->withHeader('Location', '/categories')
-                        ->withStatus(302);
-                } catch (\Exception $e) {
-                    $erreur = "Erreur lors de la création : " . $e->getMessage();
-                }
+        if (empty($libelle)) {
+            $erreur = "Le libellé est requis.";
+        } else {
+            try {
+                Categorie::create([
+                    'libelle' => $libelle,
+                    'description' => $description,
+                ]);
+                return $response
+                    ->withHeader('Location', '/categories')
+                    ->withStatus(302);
+            } catch (\Exception $e) {
+                $erreur = "Erreur lors de la création : " . $e->getMessage();
             }
         }
 

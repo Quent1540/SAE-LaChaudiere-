@@ -3,7 +3,7 @@
 {% block content %}
 <h2>Créer un événement</h2>
 
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" action="/evenement/create">
     {{ csrf_input() }}
     <div>
         <label for="titre">Titre de l'événement :</label>

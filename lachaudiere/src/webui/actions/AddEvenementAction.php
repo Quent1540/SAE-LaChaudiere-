@@ -6,9 +6,9 @@ use lachaudiere\application_core\application\useCases\EvenementService;
 use lachaudiere\application_core\application\useCases\ImagesEvenementService;
 use lachaudiere\webui\providers\AuthnProvider;
 use lachaudiere\webui\providers\CsrfTokenProvider;
+use Slim\Views\Twig;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Views\Twig;
 
 class AddEvenementAction {
     protected AuthnProvider $authProvider;
@@ -29,22 +29,12 @@ class AddEvenementAction {
     }
 
     public function __invoke(Request $request, Response $response, $args) {
-        $method = $request->getMethod();
         $view = Twig::fromRequest($request);
-
-        $categories = $this->categoriesService->getCategories();
-
-        if ($method === 'GET') {
-            return $view->render($response, 'creerEvenement.twig', [
-                'categories' => $categories
-            ]);
-        }
-
         $data = $request->getParsedBody();
         CsrfTokenProvider::check($data['csrf_token'] ?? null);
 
         $titre = $data['titre'] ?? '';
-        $description = $data['description'] ?? ''; // markdown
+        $description = $data['description'] ?? '';
         $tarif = $data['tarif'] ?? 0;
         $date_debut = $data['date_debut'] ?? null;
         $date_fin = $data['date_fin'] ?? null;
@@ -72,7 +62,7 @@ class AddEvenementAction {
             'id_utilisateur_creation' => $user->id_utilisateur,
         ]);
 
-        //ne fonctionne pas vraiment pour le moment
+        //a modifier
         $uploadedFiles = $request->getUploadedFiles();
         $imageFile = $uploadedFiles['image'] ?? null;
         $url_image = null;
