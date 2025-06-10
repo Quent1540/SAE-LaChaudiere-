@@ -31,7 +31,12 @@ class AddEvenementAction {
     public function __invoke(Request $request, Response $response, $args) {
         $view = Twig::fromRequest($request);
         $data = $request->getParsedBody();
-        CsrfTokenProvider::check($data['csrf_token'] ?? null);
+        $submittedToken = $data['csrf_token'] ?? null;
+        try {
+            CsrfTokenProvider::check($submittedToken);
+        } catch (CsrfTokenException $e) {
+            $error = "Erreur de sécurité. Veuillez réessayer.";
+        }
 
         $titre = $data['titre'] ?? '';
         $description = $data['description'] ?? '';
