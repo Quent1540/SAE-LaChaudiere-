@@ -1,6 +1,44 @@
 (() => {
+  var __async = (__this, __arguments, generator) => {
+    return new Promise((resolve, reject) => {
+      var fulfilled = (value) => {
+        try {
+          step(generator.next(value));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      var rejected = (value) => {
+        try {
+          step(generator.throw(value));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+      step((generator = generator.apply(__this, __arguments)).next());
+    });
+  };
+
   // lib/config.js
   var url = "http://localhost:8000";
+
+  // lib/ui.js
+  function displayEventsMoisCourant() {
+    return __async(this, null, function* () {
+      const response = yield fetch(`${url}/api/evenements`);
+      const data = yield response.json();
+      const evenements = data.evenements.map((e) => e.evenement);
+      const ajd = /* @__PURE__ */ new Date();
+      const anneeCourante = ajd.getFullYear();
+      const moisCourant = String(ajd.getMonth() + 1).padStart(2, "0");
+      const currentPrefix = `${anneeCourante}-${moisCourant}`;
+      const filtered = evenements.filter((ev) => ev.date_debut.startsWith(currentPrefix));
+      const source = document.getElementById("event-list-template").innerHTML;
+      const template = Handlebars.compile(source);
+      document.getElementById("event-list").innerHTML = template({ events: filtered });
+    });
+  }
 
   // index.js
   function afficherCategories() {
@@ -24,5 +62,6 @@
     });
   }
   afficherCategories();
+  displayEventsMoisCourant();
 })();
 //# sourceMappingURL=out.js.map

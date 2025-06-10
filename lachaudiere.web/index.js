@@ -1,4 +1,5 @@
 import { url } from './lib/config.js';
+import { displayEventsMoisCourant } from "./lib/ui.js";
 
 //Affichage de la liste des catégories
 function afficherCategories() {
@@ -24,5 +25,8 @@ function afficherCategories() {
             document.getElementById('categories-list').textContent = "Erreur lors du chargement des catégories";
         });
 }
-// Initialisation
+
 afficherCategories();
+
+//Affichage des événements du mois courant
+displayEventsMoisCourant();
