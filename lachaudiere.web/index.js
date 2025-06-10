@@ -1,4 +1,5 @@
 import { url } from './lib/config.js';
+
 import { displayEventsMoisCourant } from "./lib/ui.js";
 
 //Affichage de la liste des catégories
@@ -30,3 +31,8 @@ afficherCategories();
 
 //Affichage des événements du mois courant
 displayEventsMoisCourant();
+
+import { afficherCategories } from './lib/ui.js';
+
+window.addEventListener('DOMContentLoaded', afficherCategories);
+

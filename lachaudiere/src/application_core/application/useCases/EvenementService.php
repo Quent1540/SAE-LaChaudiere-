@@ -77,4 +77,15 @@ class EvenementService implements EvenementServiceInterface {
             throw new EvenementException('Erreur lors de la création de l\'événement : ' . $e->getMessage());
         }
     }
+
+    public function togglePublishStatus(int $id_evenement): bool
+    {
+        try {
+            $evenement = Evenement::findOrFail($id_evenement);
+            $evenement->est_publie = !$evenement->est_publie;
+            return $evenement->save();
+        } catch (\Exception $e) {
+            throw new EvenementException('Erreur lors de la mise à jour du statut de publication : ' . $e->getMessage());
+        }
+    }
 }
