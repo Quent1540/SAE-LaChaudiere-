@@ -7,68 +7,22 @@
 </head>
 <body>
 <main id="photo">
-	<h1>Photo : 105</h1>
-
-	<section id="la_photo">
-		<img src="">
-		<h4>titre</h4>
-		<p>description</p>
-		<p>type, defX x defY</p>
-		<h4>commentaires : </h4>
-	</section>
 	<section id = "la_categorie" >
 		<h4>categorie</h4>
 		<h4>description</h4>
 	</section>
 </main>
 
-	<section id = "la_commentaires" >
-		<h4>Commentaires</h4>
-		<ul id="les_commentaires">
-			<li>pseudo : Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, vitae.</li>
-			<li>pseudo : Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, recusandae.</li>
-		</ul>
-	</section>
-
 	<section id = "galerie">
 		<h4>Galerie</h4>
 	</section>
-
-<script id="photoTemplate" type="text/x-handlebars-template">
-	{{#if url}}
-	<img src="{{url}}" alt="photo">
-	{{/if}}
-	<h4>Titre : {{title}}</h4>
-	<p>Description : {{description}}</p>
-	<p>URL : {{type}}, {{defX}} x {{defY}}</p>
-</script>
 
 <script id="categoryTemplate" type="text/x-handlebars-template">
 	<h4>Categorie : {{nom}}</h4>
 	<p>Description de la catégorie : {{description}}</p>
 </script>
 
-<script id="commentTemplate" type="text/x-handlebars-template">
-	<h4>commentaires: </h4>
-	<ul>
-		{{#each commentaires}}
-		<li>({{this.pseudo}}) {{this.content}}</li>
-		{{/each}}
-	</ul>
-</script>
-<button id="first">first</button>
-<button id="prev">prev</button>
-<button id="loadGalleryBtn">Charger la galerie</button>
-<button id="next">next</button>
-<button id="last">last</button>
-<section id="gallery"></section>
-
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
-<script id="galleryTemplate" type="text/x-handlebars-template">
-	{{#each photos}}
-	<img src="{{url}}" alt="{{title}}" data-photoid="{{id}}">
-	{{/each}}
-</script>
 
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 <script  src='./js/out.js' defer ></script>
