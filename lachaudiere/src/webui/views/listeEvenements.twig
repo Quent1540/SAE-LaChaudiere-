@@ -2,6 +2,23 @@
 
 {% block content %}
     <h2>Liste des événements{% if selected_categorie %} - {{ selected_categorie.libelle }}{% endif %}</h2>
+
+    <form method="get" action="/evenements">
+        <label for="categorie">Filtrer par catégorie :</label>
+        <select name="categorie" id="categorie" onchange="this.form.submit()">
+            <option value="">Toutes</option>
+            {% for c in categories %}
+                <option value="{{ c.id_categorie }}"
+                        {% if selected_categorie is not null
+                        and c.id_categorie == attribute(selected_categorie, 'id_categorie') %}
+                            selected
+                        {% endif %}>
+                    {{ c.libelle }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
     <table>
         <thead>
             <tr>
@@ -29,4 +46,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <br>
+    <br>
+    <a href="/">Retour à la page d'accueil</a>
 {% endblock %}
