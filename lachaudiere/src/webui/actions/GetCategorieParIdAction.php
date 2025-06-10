@@ -1,17 +1,16 @@
 <?php
 namespace lachaudiere\webui\actions;
 
-use lachaudiere\application_core\application\exceptions\EvenementException;
-use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
+use lachaudiere\application_core\application\useCases\CategoriesServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Slim\Exception\HttpNotFoundException;
 
 class GetCategorieParIdAction {
-    private EvenementServiceInterface $catalogue;
+    private CategoriesServiceInterface $catalogue;
 
-    public function __construct(EvenementServiceInterface $catalogue) {
+    public function __construct(CategoriesServiceInterface $catalogue) {
         $this->catalogue = $catalogue;
     }
 

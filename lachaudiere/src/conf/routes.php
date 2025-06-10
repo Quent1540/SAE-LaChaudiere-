@@ -37,7 +37,7 @@ return function(App $app): App {
         $group->get('/categories', GetCategoriesAction::class);
         $group->get('/categorie/show', AddCategorieFormAction::class);
         $group->post('/categorie/create', AddCategorieAction::class);
-        $group->get('/categorie/{id}', GetCategorieParIdAction::class);
+        $group->get('/categorie/{id}', GetCategorieParIdAction::class)->setName('categorie');
         $group->get('/admin/dashboard', DashboardAction::class)->setName('admin.dashboard');
         $group->post('/evenement/create', AddEvenementAction::class);
         $group->get('/evenement/show', AddEvenementFormAction::class);
