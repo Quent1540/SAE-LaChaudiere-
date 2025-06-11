@@ -1,5 +1,5 @@
-//Affichage de la catégorie de l'image
 import {url} from "./config.js";
+let currentFiltre = "actuels";
 //Affichage des événements courants
 export async function displayEventsMoisCourant() {
     const eventList = document.getElementById('event-list');
@@ -22,6 +22,45 @@ export async function displayEventsMoisCourant() {
     eventList.innerHTML = template({events: filtered});
 }
 
+//affichage des événements passés
+export async function displayEventsPasses() {
+    const eventList = document.getElementById('event-list');
+    eventList.innerHTML = 'Chargement...';
+
+    const response = await fetch(`${url}/api/evenements`);
+    const data = await response.json();
+
+    const evenements = data.evenements.map(e => e.evenement);
+
+    const ajd = new Date();
+
+    // On garde seulement les événements dont la date est antérieure à aujourd'hui
+    const filtered = evenements.filter(ev => new Date(ev.date_debut) < ajd);
+
+    const source = document.getElementById('event-list-template').innerHTML;
+    const template = Handlebars.compile(source);
+    eventList.innerHTML = template({events: filtered});
+}
+
+//affichage des événements futurs
+export async function displayEventsFuturs() {
+    const eventList = document.getElementById('event-list');
+    eventList.innerHTML = 'Chargement...';
+
+    const response = await fetch(`${url}/api/evenements`);
+    const data = await response.json();
+
+    const evenements = data.evenements.map(e => e.evenement);
+
+    const ajd = new Date();
+
+    // On garde seulement les événements dont la date est antérieure à aujourd'hui
+    const filtered = evenements.filter(ev => new Date(ev.date_debut) > ajd);
+
+    const source = document.getElementById('event-list-template').innerHTML;
+    const template = Handlebars.compile(source);
+    eventList.innerHTML = template({events: filtered});
+}
 //click sur une categorie pour afficher les événements
 async function afficherEvenementsParCategorie(id) {
     const eventList = document.getElementById('event-list');
@@ -33,43 +72,59 @@ async function afficherEvenementsParCategorie(id) {
         const response = await fetch(`${url}/api/categories/${id}/evenements`);
         const data = await response.json();
 
-        //On recupere le nom de la catégorie
         const catRes = await fetch(`${url}/api/categories`);
         const catData = await catRes.json();
-
         const catObj = catData.categories.find(c => c.categorie.id_categorie == id);
         const categorie = catObj ? catObj.categorie : { libelle: "Catégorie inconnue" };
 
+        //filtrage selon le filtre courant
         const ajd = new Date();
-        const anneeCourante = ajd.getFullYear();
-        const moisCourant = String(ajd.getMonth() + 1).padStart(2, '0');
-        const currentPrefix = `${anneeCourante}-${moisCourant}`;
         const filtered = data.evenements
             .map(e => e.evenement)
-            .filter(ev => ev.date_debut.startsWith(currentPrefix));
+            .filter(ev => {
+                const date = new Date(ev.date_debut);
+                switch (currentFiltre) {
+                    case "passes":
+                        return date < ajd;
+                    case "futurs":
+                        return date > ajd;
+                    case "actuels":
+                        return date.getMonth() === ajd.getMonth() && date.getFullYear() === ajd.getFullYear();
+                    case "tous":
+                    default:
+                        return true;
+                }
+            });
 
+        //Affichage du nom de la catégorie + lien de réinitialisation
         const catSource = document.getElementById('categorie-selectionnee-template').innerHTML;
         const catTemplate = Handlebars.compile(catSource);
-        catContainer.innerHTML = catTemplate(categorie);
         catContainer.innerHTML = `
-        <a href="#" id="reset-filtre">Tout réafficher</a>
-        ${catTemplate(categorie)}`;
-        //On ajoute un listener pour le lien de réinitialisation du filtre
+            <a href="#" id="reset-filtre">Tout réafficher</a>
+            ${catTemplate(categorie)}
+        `;
         document.getElementById('reset-filtre').onclick = async (e) => {
             e.preventDefault();
             selectedCategoryId = null;
             document.getElementById('categorie-selectionnee').innerHTML = '';
-            await displayEventsMoisCourant();
+            if (currentFiltre === "actuels") {
+                await displayEventsMoisCourant();
+            } else if (currentFiltre === "futurs") {
+                await displayEventsFuturs();
+            } else if (currentFiltre === "passes") {
+                await displayEventsPasses();
+            } else {
+                await displayEvents("tous");
+            }
         };
 
+        //Affichage des événements filtrés
         if (filtered.length > 0) {
             const source = document.getElementById('event-list-template').innerHTML;
             const template = Handlebars.compile(source);
-            eventList.innerHTML = `
-        ${template({ events: filtered })}
-    `;
+            eventList.innerHTML = template({ events: filtered });
         } else {
-            eventList.innerHTML = "Aucun événement pour ce mois dans cette catégorie.";
+            eventList.innerHTML = "Aucun événement pour ce filtre dans cette catégorie.";
         }
     } catch (err) {
         eventList.textContent = "Erreur lors du chargement des événements";
@@ -152,7 +207,13 @@ export function activerFiltres() {
     boutons.forEach(b => {
         b.onclick = () => {
             const filtre = b.getAttribute('data-filtre');
-            displayEvents(filtre);
+            currentFiltre = filtre;
+            document.getElementById('filtre-selectionne').innerHTML = 'Filtre sélectionné : ' + currentFiltre;
+            if (selectedCategoryId) {
+                afficherEvenementsParCategorie(selectedCategoryId);
+            } else {
+                displayEvents(filtre);
+            }
         };
     });
 }

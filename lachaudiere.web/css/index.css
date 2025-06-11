@@ -42,6 +42,39 @@ h2 {
     transition: background 0.2s, color 0.2s;
 }
 
+#filtre-selectionne {
+    margin: 1.5rem 0;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    color: #2a4d69;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-align: left;
+}
+
+#event-filters {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+#event-filters button {
+    background: #2a4d69;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    margin: 0 0.3rem;
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#event-filters button:hover,
+#event-filters button:focus {
+    background: #4b86a6;
+    outline: none;
+}
+
 #categories-list a {
     display: block;
     padding: 0.6rem 1rem;
