@@ -232,7 +232,7 @@ export async function displayEvents(filtre = "actuels", tri = "date_asc") {
         eventList.textContent = "Erreur lors du chargement des événements.";
         console.error(err);
     }
-} 
+}
 
 export function activerFiltres() {
     const boutons = document.querySelectorAll('#event-filters button');
