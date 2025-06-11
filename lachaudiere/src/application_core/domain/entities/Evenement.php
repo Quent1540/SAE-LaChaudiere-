@@ -9,6 +9,17 @@ class Evenement extends Model {
     protected $primaryKey = 'id_evenement';
     public $timestamps = false;
 
+    protected $fillable = [
+        'titre',
+        'description',
+        'tarif',
+        'date_debut',
+        'date_fin',
+        'id_categorie',
+        'est_publie',
+        'id_utilisateur_creation',
+    ];
+
     public function categorie() {
         return $this->belongsTo(Categorie::class, 'id_categorie');
     }
