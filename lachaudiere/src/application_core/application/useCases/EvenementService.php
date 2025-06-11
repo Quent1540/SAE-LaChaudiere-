@@ -5,8 +5,17 @@ use lachaudiere\application_core\application\exceptions\EvenementException;
 use lachaudiere\application_core\domain\entities\Categorie;
 use Illuminate\Database\QueryException;
 use lachaudiere\application_core\domain\entities\Evenement;
+use Psr\Http\Message\UploadedFileInterface;
 
 class EvenementService implements EvenementServiceInterface {
+
+    private ImagesEvenementServiceInterface $imagesService;
+
+    public function __construct(ImagesEvenementServiceInterface $imagesService)
+    {
+        $this->imagesService = $imagesService;
+    }
+
     public function getCategories(): array {
         try {
             $result = Categorie::all();
@@ -40,7 +49,7 @@ class EvenementService implements EvenementServiceInterface {
 
     public function getEvenementsAvecCategorie(): array {
         try {
-            $evenements = Evenement::with('categorie')
+            $evenements = Evenement::with(['categorie', 'images'])
                 ->orderBy('date_debut', 'asc')
                 ->get();
             return $evenements->toArray();
@@ -51,32 +60,13 @@ class EvenementService implements EvenementServiceInterface {
 
     public function getEvenementParId(int $id_evenement): array {
         try {
-            $evenement = Evenement::findOrFail($id_evenement);
+            $evenement = Evenement::with(['images', 'categorie'])->findOrFail($id_evenement);
             return $evenement->toArray();
         } catch (\Exception $e) {
             throw new EvenementException('Événement introuvable : ' . $e->getMessage());
         }
     }
 
-    public function createEvenement(array $data)
-    {
-        try {
-            $evenement = new Evenement();
-            $evenement->titre = $data['titre'] ?? '';
-            $evenement->description = $data['description'] ?? '';
-            $evenement->tarif = $data['tarif'] ?? 0;
-            $evenement->date_debut = $data['date_debut'] ?? null;
-            $evenement->date_fin = $data['date_fin'] ?? null;
-            $evenement->id_categorie = $data['id_categorie'] ?? null;
-            $evenement->est_publie = $data['est_publie'] ?? 0;
-            $evenement->id_utilisateur_creation = $data['id_utilisateur_creation'] ?? null;
-            $evenement->save();
-
-            return $evenement->id_evenement;
-        } catch (\Exception $e) {
-            throw new EvenementException('Erreur lors de la création de l\'événement : ' . $e->getMessage());
-        }
-    }
 
     public function togglePublishStatus(int $id_evenement): bool
     {
@@ -86,6 +76,33 @@ class EvenementService implements EvenementServiceInterface {
             return $evenement->save();
         } catch (\Exception $e) {
             throw new EvenementException('Erreur lors de la mise à jour du statut de publication : ' . $e->getMessage());
+        }
+    }
+
+    public function createEvenementWithImage(array $data, ?UploadedFileInterface $imageFile): int
+    {
+        try {
+            \Illuminate\Database\Capsule\Manager::beginTransaction();
+
+            $evenement = new Evenement();
+            $evenement->fill($data);
+            $evenement->save();
+            
+            if ($imageFile && $imageFile->getError() === UPLOAD_ERR_OK) {
+                $this->imagesService->uploadAndCreateImage(
+                    $evenement->id_evenement,
+                    $imageFile,
+                    $data['legende'] ?? null
+                );
+            }
+            
+            \Illuminate\Database\Capsule\Manager::commit();
+
+            return $evenement->id_evenement;
+
+        } catch (\Exception $e) {
+            \Illuminate\Database\Capsule\Manager::rollback();
+            throw new EvenementException('Erreur lors de la création de l\'événement : ' . $e->getMessage());
         }
     }
 }
