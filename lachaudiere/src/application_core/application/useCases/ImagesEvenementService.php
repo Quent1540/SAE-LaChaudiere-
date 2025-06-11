@@ -47,7 +47,8 @@ class ImagesEvenementService implements ImagesEvenementServiceInterface
         $filename = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '_', $file->getClientFilename());
         $file->moveTo($this->uploadPath . $filename);
 
-        $relativePath = '/uploads/' . $filename;
+        // $relativePath = '/uploads/' . $filename;
+        $relativePath = '/api/images/'. $filename;
         
         return $this->addImageEvenement([
             'id_evenement' => $id_evenement,
