@@ -34,6 +34,8 @@
 			<button data-tri="titre">Titre A→Z</button>
 		</div>
 
+		<button id="afficher-favoris">Voir mes favoris</button>
+
 	</section>
 </main>
 <script id="categories-list-template" type="text/x-handlebars-template">
@@ -55,10 +57,35 @@
 			<strong>{{titre}}</strong> — {{artiste}}<br>
 			Date : {{date_debut}}<br>
 			Catégorie : {{id_categorie}}<br>
-			<button class="event-detail-btn" data-id="{{id_evenement}}">Détail</button>
+			<span class="favori-star" data-id="{{id}}">
+    			{{#if (isFavori id)}}
+        			&#9733;
+    			{{else}}
+        			&#9734;
+    			{{/if}}
+</span>
+			<button class="event-detail-btn" data-id="{{id}}">Détail</button>
 		</li>
 		{{/each}}
 	</ul>
+</script>
+<script id="event-detail-template" type="text/x-handlebars-template">
+	<h3>{{titre}}</h3>
+	<div>
+		{{#if images.length}}
+		{{#each images}}
+		<img src="{{url}}" alt="{{legende}}" style="max-width:300px;"><br>
+		<em>{{legende}}</em><br>
+		{{/each}}
+		{{/if}}
+	</div>
+	<div>
+		<strong>Date :</strong> {{date_debut}} → {{date_fin}}<br>
+		<strong>Tarif :</strong> {{tarif}}<br>
+		<strong>Description :</strong>
+		<div class="event-description">{{{descriptionHtml}}}</div>
+	</div>
+	<button id="close-detail">Fermer</button>
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
