@@ -1,5 +1,8 @@
 import {url} from "./config.js";
-let currentFiltre = "actuels";
+let currentFilter= "actuels";
+  
+let currentSort = "date_asc";
+
 //Affichage des événements courants
 export async function displayEventsMoisCourant() {
     const eventList = document.getElementById('event-list');
@@ -34,7 +37,7 @@ export async function displayEventsPasses() {
 
     const ajd = new Date();
 
-    // On garde seulement les événements dont la date est antérieure à aujourd'hui
+    //On garde seulement les événements dont la date est antérieure à aujourd'hui
     const filtered = evenements.filter(ev => new Date(ev.date_debut) < ajd);
 
     const source = document.getElementById('event-list-template').innerHTML;
@@ -83,7 +86,7 @@ async function afficherEvenementsParCategorie(id) {
             .map(e => e.evenement)
             .filter(ev => {
                 const date = new Date(ev.date_debut);
-                switch (currentFiltre) {
+                switch (currentFilter) {
                     case "passes":
                         return date < ajd;
                     case "futurs":
@@ -107,11 +110,11 @@ async function afficherEvenementsParCategorie(id) {
             e.preventDefault();
             selectedCategoryId = null;
             document.getElementById('categorie-selectionnee').innerHTML = '';
-            if (currentFiltre === "actuels") {
+            if (currentFilter === "actuels") {
                 await displayEventsMoisCourant();
-            } else if (currentFiltre === "futurs") {
+            } else if (currentFilter === "futurs") {
                 await displayEventsFuturs();
-            } else if (currentFiltre === "passes") {
+            } else if (currentFilter === "passes") {
                 await displayEventsPasses();
             } else {
                 await displayEvents("tous");
@@ -164,7 +167,7 @@ export async function afficherCategories() {
 
 let allEvenements = [];
 
-export async function displayEvents(filtre = "actuels") {
+export async function displayEvents(filtre = "actuels", tri = "date_asc") {
     const eventList = document.getElementById('event-list');
     eventList.innerHTML = 'Chargement...';
 
@@ -177,18 +180,28 @@ export async function displayEvents(filtre = "actuels") {
 
         const ajd = new Date();
 
-        const filtered = allEvenements.filter(ev => {
+        let filtered = allEvenements.filter(ev => {
             const date = new Date(ev.date_debut);
             switch (filtre) {
-                case "passes":
-                    return date < ajd;
-                case "futurs":
-                    return date > ajd;
-                case "actuels":
-                    return date.getMonth() === ajd.getMonth() && date.getFullYear() === ajd.getFullYear();
+                case "passes": return date < ajd;
+                case "futurs": return date > ajd;
+                case "actuels": return date.getMonth() === ajd.getMonth() && date.getFullYear() === ajd.getFullYear();
                 case "tous":
+                default: return true;
+            }
+        });
+
+        //Tri selon le critère
+        filtered.sort((a, b) => {
+            switch (tri) {
+                case "date_asc":
+                    return new Date(a.date_debut) - new Date(b.date_debut);
+                case "date_desc":
+                    return new Date(b.date_debut) - new Date(a.date_debut);
+                case "titre":
+                    return a.titre.localeCompare(b.titre);
                 default:
-                    return true;
+                    return 0;
             }
         });
 
@@ -202,19 +215,29 @@ export async function displayEvents(filtre = "actuels") {
     }
 }
 
+
 export function activerFiltres() {
     const boutons = document.querySelectorAll('#event-filters button');
     boutons.forEach(b => {
         b.onclick = () => {
             const filtre = b.getAttribute('data-filtre');
-            currentFiltre = filtre;
-            document.getElementById('filtre-selectionne').innerHTML = 'Filtre sélectionné : ' + currentFiltre;
+            currentFilter = filtre;
+            document.getElementById('filtre-selectionne').innerHTML = 'Filtre sélectionné : ' + currentFilter;
             if (selectedCategoryId) {
                 afficherEvenementsParCategorie(selectedCategoryId);
             } else {
-                displayEvents(filtre);
+                displayEvents(currentFilter, currentSort);
             }
         };
     });
 }
 
+export function activerTri() {
+    const boutons = document.querySelectorAll('#event-sort button');
+    boutons.forEach(b => {
+        b.onclick = () => {
+            currentSort = b.getAttribute('data-tri');
+            displayEvents(currentFilter, currentSort);
+        };
+    });
+}
