@@ -69,6 +69,24 @@
 		{{/each}}
 	</ul>
 </script>
+<script id="event-detail-template" type="text/x-handlebars-template">
+	<h3>{{titre}}</h3>
+	<div>
+		{{#if images.length}}
+		{{#each images}}
+		<img src="{{url}}" alt="{{legende}}" style="max-width:300px;"><br>
+		<em>{{legende}}</em><br>
+		{{/each}}
+		{{/if}}
+	</div>
+	<div>
+		<strong>Date :</strong> {{date_debut}} → {{date_fin}}<br>
+		<strong>Tarif :</strong> {{tarif}}<br>
+		<strong>Description :</strong>
+		<div class="event-description">{{{descriptionHtml}}}</div>
+	</div>
+	<button id="close-detail">Fermer</button>
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

@@ -23,6 +23,12 @@ export async function displayEventsMoisCourant() {
     const template = Handlebars.compile(source);
     eventList.innerHTML = template({events: filtered});
     activerFavoris();
+    document.querySelectorAll('.event-detail-btn').forEach(btn => {
+        btn.onclick = () => {
+            const id = btn.getAttribute('data-id');
+            afficherDetailEvenement(id);
+        };
+    });
 }
 
 //affichage des événements passés
@@ -44,6 +50,12 @@ export async function displayEventsPasses() {
     const template = Handlebars.compile(source);
     eventList.innerHTML = template({events: filtered});
     activerFavoris();
+    document.querySelectorAll('.event-detail-btn').forEach(btn => {
+        btn.onclick = () => {
+            const id = btn.getAttribute('data-id');
+            afficherDetailEvenement(id);
+        };
+    });
 }
 
 //affichage des événements futurs
@@ -65,6 +77,12 @@ export async function displayEventsFuturs() {
     const template = Handlebars.compile(source);
     eventList.innerHTML = template({events: filtered});
     activerFavoris();
+    document.querySelectorAll('.event-detail-btn').forEach(btn => {
+        btn.onclick = () => {
+            const id = btn.getAttribute('data-id');
+            afficherDetailEvenement(id);
+        };
+    });
 }
 
 //click sur une categorie pour afficher les événements
@@ -143,6 +161,12 @@ async function afficherEvenementsParCategorie(id) {
             const template = Handlebars.compile(source);
             eventList.innerHTML = template({ events: filtered });
             activerFavoris();
+            document.querySelectorAll('.event-detail-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const id = btn.getAttribute('data-id');
+                    afficherDetailEvenement(id);
+                };
+            });
         } else {
             eventList.innerHTML = "Aucun événement pour ce filtre dans cette catégorie.";
         }
@@ -227,6 +251,12 @@ export async function displayEvents(filtre = "actuels", tri = "date_asc") {
         const template = Handlebars.compile(source);
         eventList.innerHTML = template({ events: filtered });
         activerFavoris();
+        document.querySelectorAll('.event-detail-btn').forEach(btn => {
+            btn.onclick = () => {
+                const id = btn.getAttribute('data-id');
+                afficherDetailEvenement(id);
+            };
+        });
 
     } catch (err) {
         eventList.textContent = "Erreur lors du chargement des événements.";
@@ -302,6 +332,26 @@ export async function displayFavoris() {
     const source = document.getElementById('event-list-template').innerHTML;
     const template = Handlebars.compile(source);
     eventList.innerHTML = template({ events: filtered });
-
     activerFavoris();
+    document.querySelectorAll('.event-detail-btn').forEach(btn => {
+        btn.onclick = () => {
+            const id = btn.getAttribute('data-id');
+            afficherDetailEvenement(id);
+        };
+    });
+}
+
+//Affichage du détail d'un événement
+export async function afficherDetailEvenement(id) {
+    const detailDiv = document.getElementById('event-detail');
+    detailDiv.innerHTML = 'Chargement...';
+    const response = await fetch(`${url}/api/evenements/${id}`);
+    const data = await response.json();
+    const evenement = data.evenement;
+    //Converti la description markdown en html, sinon ça bug
+    evenement.descriptionHtml = marked.parse(evenement.description || "");
+    const source = document.getElementById('event-detail-template').innerHTML;
+    const template = Handlebars.compile(source);
+    detailDiv.innerHTML = template(evenement);
+    document.getElementById('close-detail').onclick = () => detailDiv.innerHTML = '';
 }
