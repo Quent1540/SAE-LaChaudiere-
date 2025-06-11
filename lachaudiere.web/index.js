@@ -8,5 +8,14 @@ window.addEventListener('DOMContentLoaded', () => {
     displayEvents("actuels", "date_asc");
     activerFiltres();
     activerTri();
+    Handlebars.registerHelper('isFavori', function(id_evenement) {
+        const favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
+        return favoris.includes(id_evenement);
+    });
+    document.getElementById('afficher-favoris').onclick = () => {
+        import('./lib/ui.js').then(module => {
+            module.displayFavoris();
+        });
+    };
 });
 

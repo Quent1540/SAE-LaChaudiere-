@@ -33,6 +33,8 @@
 			<button data-tri="titre">Titre A→Z</button>
 		</div>
 
+		<button id="afficher-favoris">Voir mes favoris</button>
+
 	</section>
 </main>
 <script id="categories-list-template" type="text/x-handlebars-template">
@@ -53,7 +55,10 @@
 		<li>
 			<strong>{{titre}}</strong> — {{artiste}}<br>
 			Date : {{date_debut}}<br>
-			Catégorie : {{id_categorie}}
+			Catégorie : {{id_categorie}}<br>
+			<button class="favori-btn" data-id="{{id_evenement}}">
+				{{#if (isFavori id_evenement)}}★ Retirer des favoris{{else}}☆ Ajouter aux favoris{{/if}}
+			</button>
 		</li>
 		{{/each}}
 	</ul>
