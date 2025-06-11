@@ -51,20 +51,23 @@ async function afficherEvenementsParCategorie(id) {
         const catSource = document.getElementById('categorie-selectionnee-template').innerHTML;
         const catTemplate = Handlebars.compile(catSource);
         catContainer.innerHTML = catTemplate(categorie);
+        catContainer.innerHTML = `
+        <a href="#" id="reset-filtre">Tout réafficher</a>
+        ${catTemplate(categorie)}`;
+        //On ajoute un listener pour le lien de réinitialisation du filtre
+        document.getElementById('reset-filtre').onclick = async (e) => {
+            e.preventDefault();
+            selectedCategoryId = null;
+            document.getElementById('categorie-selectionnee').innerHTML = '';
+            await displayEventsMoisCourant();
+        };
 
         if (filtered.length > 0) {
             const source = document.getElementById('event-list-template').innerHTML;
             const template = Handlebars.compile(source);
             eventList.innerHTML = `
-        <a href="#" id="reset-filtre">Tout réafficher</a>
         ${template({ events: filtered })}
     `;
-            document.getElementById('reset-filtre').onclick = async (e) => {
-                e.preventDefault();
-                selectedCategoryId = null;
-                document.getElementById('categorie-selectionnee').innerHTML = '';
-                await displayEventsMoisCourant();
-            };
         } else {
             eventList.innerHTML = "Aucun événement pour ce mois dans cette catégorie.";
         }
@@ -93,11 +96,7 @@ export async function afficherCategories() {
             const id = lien.getAttribute('data-id');
             lien.onclick = async (e) => {
                 e.preventDefault();
-                if (selectedCategoryId === id) {
-                    selectedCategoryId = null;
-                    document.getElementById('categorie-selectionnee').innerHTML = '';
-                    await displayEventsMoisCourant();
-                } else {
+                if (selectedCategoryId !== id) {
                     selectedCategoryId = id;
                     await afficherEvenementsParCategorie(id);
                 }
