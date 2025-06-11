@@ -26,6 +26,7 @@ class GetEvenementParIdApiAction {
             $data = [
                 'type' => 'resource',
                 'evenement' => [
+                    'id' => $evenement['id_evenement'],
                     'titre' => $evenement['titre'],
                     'description' => $evenement['description'],
                     'tarif' => $evenement['tarif'],
