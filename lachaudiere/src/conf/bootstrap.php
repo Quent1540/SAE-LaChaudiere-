@@ -85,4 +85,15 @@ $container->set(AuthMiddleware::class, function (ContainerInterface $c) {
 $app = (require __DIR__ . '/routes.php')($app);
 $app = (require __DIR__ . '/../api/routes.php')($app);
 
+
+
+//Middleware CORS global
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', '*')
+        ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+});
+
 return $app;

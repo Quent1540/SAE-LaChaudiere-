@@ -18,6 +18,7 @@
 		<div id="filtre-selectionne"></div>
 		<div id="tri-selectionne"></div>
 		<div id="event-list"></div>
+		<div id="event-detail"></div>
 
 		<div id="event-filters">
 			<button data-filtre="tous">Tous</button>
@@ -53,13 +54,15 @@
 		<li>
 			<strong>{{titre}}</strong> — {{artiste}}<br>
 			Date : {{date_debut}}<br>
-			Catégorie : {{id_categorie}}
+			Catégorie : {{id_categorie}}<br>
+			<button class="event-detail-btn" data-id="{{id_evenement}}">Détail</button>
 		</li>
 		{{/each}}
 	</ul>
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="./index.js" type="module"></script>
 </body>
 </html>
