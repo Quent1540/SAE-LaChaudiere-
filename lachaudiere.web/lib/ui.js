@@ -2,7 +2,7 @@ import {url} from "./config.js";
 let currentFilter= "actuels";
   
 let currentSort = "date_asc";
-
+document.getElementById('filtre-selectionne').innerHTML = 'Filtre sélectionné : ' + currentFilter;
 //Affichage des événements courants
 export async function displayEventsMoisCourant() {
     const eventList = document.getElementById('event-list');
@@ -82,7 +82,7 @@ async function afficherEvenementsParCategorie(id) {
 
         //filtrage selon le filtre courant
         const ajd = new Date();
-        const filtered = data.evenements
+        let filtered = data.evenements
             .map(e => e.evenement)
             .filter(ev => {
                 const date = new Date(ev.date_debut);
@@ -98,6 +98,19 @@ async function afficherEvenementsParCategorie(id) {
                         return true;
                 }
             });
+
+        filtered.sort((a, b) => {
+            switch (currentSort) {
+                case "date_asc":
+                    return new Date(a.date_debut) - new Date(b.date_debut);
+                case "date_desc":
+                    return new Date(b.date_debut) - new Date(a.date_debut);
+                case "titre":
+                    return a.titre.localeCompare(b.titre);
+                default:
+                    return 0;
+            }
+        });
 
         //Affichage du nom de la catégorie + lien de réinitialisation
         const catSource = document.getElementById('categorie-selectionnee-template').innerHTML;
@@ -237,7 +250,12 @@ export function activerTri() {
     boutons.forEach(b => {
         b.onclick = () => {
             currentSort = b.getAttribute('data-tri');
-            displayEvents(currentFilter, currentSort);
+            document.getElementById('tri-selectionne').innerHTML = 'Tri sélectionné : ' + currentSort;
+            if (selectedCategoryId) {
+                afficherEvenementsParCategorie(selectedCategoryId);
+            } else {
+                displayEvents(currentFilter, currentSort);
+            }
         };
     });
 }
