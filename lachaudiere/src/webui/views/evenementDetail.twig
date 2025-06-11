@@ -1,0 +1,54 @@
+{% extends "main.twig" %}
+
+{% block title %}Détail de l'événement : {{ evenement.titre }}{% endblock %}
+
+{% block content %}
+    <h2>{{ evenement.titre }}</h2>
+
+    <div class="event-details">
+        <p><strong>Catégorie :</strong> {{ evenement.categorie.libelle }}</p>
+        <p>
+            <strong>Dates :</strong>
+            Du {{ evenement.date_debut|date('d/m/Y à H:i') }}
+            {% if evenement.date_fin %}
+                au {{ evenement.date_fin|date('d/m/Y à H:i') }}
+            {% endif %}
+        </p>
+        <p><strong>Tarif :</strong> {{ evenement.tarif ? evenement.tarif ~ ' €' : 'Gratuit' }}</p>
+        <p>
+            <strong>Statut :</strong>
+            {% if evenement.est_publie %}
+                <span style="color:green; font-weight:bold;">Publié</span>
+            {% else %}
+                <span style="color:red;">Non Publié</span>
+            {% endif %}
+        </p>
+
+        <hr>
+
+        <h3>Description</h3>
+        <div class="description-content">
+            {# C'est ici que la magie opère. Le filtre |raw empêche Twig d'échapper les balises HTML #}
+            {{ html_description|raw }}
+        </div>
+
+        <hr>
+
+        <h3>Images</h3>
+        <div class="event-images">
+            {% if evenement.images is not empty %}
+                {% for image in evenement.images %}
+                    <figure>
+                        <img src="{{ image.url_image }}" alt="{{ image.legende }}" style="max-width: 400px; height: auto; display: block; margin-bottom: 10px;">
+                        <figcaption>{{ image.legende }}</figcaption>
+                    </figure>
+                {% endfor %}
+            {% else %}
+                <p>Aucune image pour cet événement.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <br>
+    <a href="{{ url_for('list_evenements') }}" class="button-modern">Retour à la liste</a>
+{% endblock %}

@@ -27,6 +27,7 @@
                 <th>Dates</th>
                 <th>Statut</th>
                 <th>Action</th>
+                <th>Détails</th>
             </tr>
         </thead>
         <tbody>
@@ -55,10 +56,13 @@
                             </button>
                         </form>
                     </td>
+                    <td>
+                        <a href="{{ url_for('event_details', {'id': evenement.id_evenement}) }}">Voir</a>
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">Aucun événement trouvé.</td>
+                    <td colspan="6">Aucun événement trouvé.</td>
                 </tr>
             {% endfor %}
         </tbody>
