@@ -73,19 +73,34 @@ class _EvenementDetailsState extends State<EvenementDetails> {
       children: evenement.images.map((image) {
         return Card(
           clipBehavior: Clip.antiAlias,
+          margin: const EdgeInsets.only(bottom: 16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.network(
                 image.url,
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: 200,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 50),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const SizedBox(
+                    height: 200,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  print("Erreur de chargement pour ${image.url}: $error");
+                  return const SizedBox(
+                    height: 200,
+                    child: Center(child: Icon(Icons.broken_image, size: 50, color: Colors.grey)),
+                  );
+                },
               ),
               if (image.legende.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(image.legende, style: Theme.of(context).textTheme.titleSmall),
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(image.legende, style: Theme.of(context).textTheme.bodyMedium),
                 ),
             ],
           ),

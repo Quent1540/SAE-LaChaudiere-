@@ -6,7 +6,7 @@ class Evenement {
   final String titre;
   String? description;
   final DateTime dateDebut;
-  final DateTime? dateFin;
+  DateTime? dateFin;
   final Categorie categorie;
   List<ImageEvenement> images;
 
@@ -37,17 +37,24 @@ class Evenement {
       titre: evenementData['titre'] ?? 'Titre inconnu',
       dateDebut: DateTime.parse(evenementData['date_debut']),
       categorie: categorie,
+      images: [], 
     );
   }
 
-  void updateWithDetails(Map<String, dynamic> json) {
+  void updateWithDetails(Map<String, dynamic> json, String baseUrl) {
     final evenementData = json['evenement'];
     
     description = evenementData['description'];
     
-    if (evenementData['images'] != null) {
+    if (evenementData['date_fin'] != null) {
+      dateFin = DateTime.parse(evenementData['date_fin']);
+    }
+    
+    if (evenementData['images'] != null && evenementData['images'] is List) {
       final List<dynamic> imagesJson = evenementData['images'];
-      images = imagesJson.map((imgJson) => ImageEvenement.fromJson(imgJson)).toList();
+      images = imagesJson.map((imgJson) => ImageEvenement.fromJson(imgJson, baseUrl)).toList();
+    } else {
+      images = [];
     }
   }
 }
