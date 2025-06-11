@@ -1,5 +1,9 @@
 //Affichage de la catégorie de l'image
 import {url} from "./config.js";
+
+let currentFilter = "actuels";
+let currentSort = "date_asc";
+
 //Affichage des événements courants
 export async function displayEventsMoisCourant() {
     const eventList = document.getElementById('event-list');
@@ -109,7 +113,7 @@ export async function afficherCategories() {
 
 let allEvenements = [];
 
-export async function displayEvents(filtre = "actuels") {
+export async function displayEvents(filtre = "actuels", tri = "date_asc") {
     const eventList = document.getElementById('event-list');
     eventList.innerHTML = 'Chargement...';
 
@@ -122,18 +126,28 @@ export async function displayEvents(filtre = "actuels") {
 
         const ajd = new Date();
 
-        const filtered = allEvenements.filter(ev => {
+        let filtered = allEvenements.filter(ev => {
             const date = new Date(ev.date_debut);
             switch (filtre) {
-                case "passes":
-                    return date < ajd;
-                case "futurs":
-                    return date > ajd;
-                case "actuels":
-                    return date.getMonth() === ajd.getMonth() && date.getFullYear() === ajd.getFullYear();
+                case "passes": return date < ajd;
+                case "futurs": return date > ajd;
+                case "actuels": return date.getMonth() === ajd.getMonth() && date.getFullYear() === ajd.getFullYear();
                 case "tous":
+                default: return true;
+            }
+        });
+
+        // Tri selon le critère
+        filtered.sort((a, b) => {
+            switch (tri) {
+                case "date_asc":
+                    return new Date(a.date_debut) - new Date(b.date_debut);
+                case "date_desc":
+                    return new Date(b.date_debut) - new Date(a.date_debut);
+                case "titre":
+                    return a.titre.localeCompare(b.titre);
                 default:
-                    return true;
+                    return 0;
             }
         });
 
@@ -147,13 +161,23 @@ export async function displayEvents(filtre = "actuels") {
     }
 }
 
+
 export function activerFiltres() {
     const boutons = document.querySelectorAll('#event-filters button');
     boutons.forEach(b => {
         b.onclick = () => {
-            const filtre = b.getAttribute('data-filtre');
-            displayEvents(filtre);
+            currentFilter = b.getAttribute('data-filtre');
+            displayEvents(currentFilter, currentSort);
         };
     });
 }
 
+export function activerTri() {
+    const boutons = document.querySelectorAll('#event-sort button');
+    boutons.forEach(b => {
+        b.onclick = () => {
+            currentSort = b.getAttribute('data-tri');
+            displayEvents(currentFilter, currentSort);
+        };
+    });
+}
