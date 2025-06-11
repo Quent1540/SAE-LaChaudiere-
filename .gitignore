@@ -8,6 +8,6 @@ lachaudiere/src/views/cache/
 composer.lock
 db_data/
 package-lock.json
-js/out.js
-js/out.js.map
+lachaudiere.web/js/out.js
+lachaudiere.web/js/out.js.map
 /node_modules/
