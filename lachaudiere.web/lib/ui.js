@@ -45,6 +45,7 @@ async function afficherEvenementsParCategorie(id) {
         const moisCourant = String(ajd.getMonth() + 1).padStart(2, '0');
         const currentPrefix = `${anneeCourante}-${moisCourant}`;
         const filtered = data.evenements
+            //skskks
             .map(e => e.evenement)
             .filter(ev => ev.date_debut.startsWith(currentPrefix));
 
