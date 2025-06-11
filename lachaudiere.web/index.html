@@ -3,20 +3,33 @@
 <head>
 	<meta charset="UTF-8">
 	<title>LaChaudière Agenda</title>
-	<link rel="stylesheet" href="css/index.css">
+	<link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
 <main>
+	<h1>Bienvenue sur LaChaudiereAgenda</h1>
 	<section id="categories">
 		<h2>Catégories</h2>
 		<div id="categories-list">Chargement...</div>
 	</section>
 	<section id="evenements">
 		<h2>Événements</h2>
+		<div id="categorie-selectionnee"></div>
 		<div id="event-list"></div>
 	</section>
 </main>
-
+<script id="categories-list-template" type="text/x-handlebars-template">
+	<ul>
+		{{#each categories}}
+		<li>
+			<a href="#" data-id="{{categorie.id_categorie}}">{{categorie.libelle}}</a>
+		</li>
+		{{/each}}
+	</ul>
+</script>
+<script id="categorie-selectionnee-template" type="text/x-handlebars-template">
+	<h3>Catégorie : {{libelle}}</h3>
+</script>
 <script id="event-list-template" type="text/x-handlebars-template">
 	<ul>
 		{{#each events}}
