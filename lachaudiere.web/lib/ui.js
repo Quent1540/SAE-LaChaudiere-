@@ -1,8 +1,8 @@
 import {url} from "./config.js";
 let currentFilter= "actuels";
-  
 let currentSort = "date_asc";
 document.getElementById('filtre-selectionne').innerHTML = 'Filtre sélectionné : ' + currentFilter;
+
 //Affichage des événements courants
 export async function displayEventsMoisCourant() {
     const eventList = document.getElementById('event-list');
@@ -19,10 +19,10 @@ export async function displayEventsMoisCourant() {
     const currentPrefix = `${anneeCourante}-${moisCourant}`;
 
     const filtered = evenements.filter(ev => ev.date_debut.startsWith(currentPrefix));
-
     const source = document.getElementById('event-list-template').innerHTML;
     const template = Handlebars.compile(source);
     eventList.innerHTML = template({events: filtered});
+    activerFavoris();
 }
 
 //affichage des événements passés
@@ -43,6 +43,7 @@ export async function displayEventsPasses() {
     const source = document.getElementById('event-list-template').innerHTML;
     const template = Handlebars.compile(source);
     eventList.innerHTML = template({events: filtered});
+    activerFavoris();
 }
 
 //affichage des événements futurs
@@ -63,7 +64,9 @@ export async function displayEventsFuturs() {
     const source = document.getElementById('event-list-template').innerHTML;
     const template = Handlebars.compile(source);
     eventList.innerHTML = template({events: filtered});
+    activerFavoris();
 }
+
 //click sur une categorie pour afficher les événements
 async function afficherEvenementsParCategorie(id) {
     const eventList = document.getElementById('event-list');
@@ -139,6 +142,7 @@ async function afficherEvenementsParCategorie(id) {
             const source = document.getElementById('event-list-template').innerHTML;
             const template = Handlebars.compile(source);
             eventList.innerHTML = template({ events: filtered });
+            activerFavoris();
         } else {
             eventList.innerHTML = "Aucun événement pour ce filtre dans cette catégorie.";
         }
@@ -218,16 +222,17 @@ export async function displayEvents(filtre = "actuels", tri = "date_asc") {
             }
         });
 
+
         const source = document.getElementById('event-list-template').innerHTML;
         const template = Handlebars.compile(source);
         eventList.innerHTML = template({ events: filtered });
+        activerFavoris();
 
     } catch (err) {
         eventList.textContent = "Erreur lors du chargement des événements.";
         console.error(err);
     }
 }
-
 
 export function activerFiltres() {
     const boutons = document.querySelectorAll('#event-filters button');
@@ -258,4 +263,45 @@ export function activerTri() {
             }
         };
     });
+}
+
+function activerFavoris() {
+    document.querySelectorAll('.favori-star').forEach(star => {
+        star.onclick = function() {
+            const id = this.getAttribute('data-id');
+            let favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
+            if (favoris.includes(id)) {
+                favoris = favoris.filter(f => f !== id);
+            } else {
+                favoris.push(id);
+            }
+            localStorage.setItem('favoris', JSON.stringify(favoris));
+            if (selectedCategoryId) {
+                afficherEvenementsParCategorie(selectedCategoryId);
+            } else {
+                displayEvents(currentFilter, currentSort);
+            }
+        };
+    });
+}
+
+export async function displayFavoris() {
+    const eventList = document.getElementById('event-list');
+    eventList.innerHTML = 'Chargement...';
+
+    const favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
+
+    if (allEvenements.length === 0) {
+        const response = await fetch(`${url}/api/evenements`);
+        const data = await response.json();
+        allEvenements = data.evenements.map(e => e.evenement);
+    }
+
+    const filtered = allEvenements.filter(ev => favoris.includes(ev.id.toString()));
+
+    const source = document.getElementById('event-list-template').innerHTML;
+    const template = Handlebars.compile(source);
+    eventList.innerHTML = template({ events: filtered });
+
+    activerFavoris();
 }
