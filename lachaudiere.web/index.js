@@ -8,9 +8,9 @@ window.addEventListener('DOMContentLoaded', () => {
     displayEvents("actuels", "date_asc");
     activerFiltres();
     activerTri();
-    Handlebars.registerHelper('isFavori', function(id_evenement) {
+    Handlebars.registerHelper('isFavori', function(id) {
         const favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
-        return favoris.includes(id_evenement);
+        return favoris.includes(id.toString());
     });
     document.getElementById('afficher-favoris').onclick = () => {
         import('./lib/ui.js').then(module => {

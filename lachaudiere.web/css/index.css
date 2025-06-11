@@ -147,3 +147,16 @@ img {
     border-radius: 8px;
     margin: 1rem 0;
 }
+
+.favori-star {
+    font-size: 1.7rem;
+    color: #ffd600;
+    cursor: pointer;
+    user-select: none;
+    margin-right: 0.5rem;
+    transition: transform 0.1s;
+}
+.favori-star:hover {
+    transform: scale(1.2);
+    filter: brightness(1.2);
+}

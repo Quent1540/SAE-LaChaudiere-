@@ -222,7 +222,6 @@ export async function displayEvents(filtre = "actuels", tri = "date_asc") {
             }
         });
 
-        console.log(filtered);
 
         const source = document.getElementById('event-list-template').innerHTML;
         const template = Handlebars.compile(source);
@@ -267,8 +266,8 @@ export function activerTri() {
 }
 
 function activerFavoris() {
-    document.querySelectorAll('.favori-btn').forEach(btn => {
-        btn.onclick = function() {
+    document.querySelectorAll('.favori-star').forEach(star => {
+        star.onclick = function() {
             const id = this.getAttribute('data-id');
             let favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
             if (favoris.includes(id)) {
@@ -287,5 +286,22 @@ function activerFavoris() {
 }
 
 export async function displayFavoris() {
-    console.log(JSON.parse(localStorage.getItem('favoris') || '[]'));
+    const eventList = document.getElementById('event-list');
+    eventList.innerHTML = 'Chargement...';
+
+    const favoris = JSON.parse(localStorage.getItem('favoris') || '[]');
+
+    if (allEvenements.length === 0) {
+        const response = await fetch(`${url}/api/evenements`);
+        const data = await response.json();
+        allEvenements = data.evenements.map(e => e.evenement);
+    }
+
+    const filtered = allEvenements.filter(ev => favoris.includes(ev.id.toString()));
+
+    const source = document.getElementById('event-list-template').innerHTML;
+    const template = Handlebars.compile(source);
+    eventList.innerHTML = template({ events: filtered });
+
+    activerFavoris();
 }
