@@ -48,6 +48,8 @@ class GetEvenementsApiAction {
                     'evenement' => [
                         'titre' => $event['titre'],
                         'date_debut' => $event['date_debut'],
+                        'id_categorie' => $event['id_categorie'],
+                        'categorie_libelle' => $event['categorie']['libelle'] ?? null,
                         'images' => array_map(fn($img) => ['url' => $img['url_image'], 'legende' => $img['legende']], $event['images'] ?? [])
                     ],
                     'links' => [

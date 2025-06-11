@@ -18,7 +18,7 @@ class EvenementService implements EvenementServiceInterface {
 
     public function getEvenements(): array {
         try {
-            $result = Evenement::all();
+            $result = Evenement::with('categorie')->get();
             return $result->toArray();
         } catch (QueryException $e) {
             throw new EvenementException('Erreur lors de la récupération des événements : ' . $e->getMessage());
