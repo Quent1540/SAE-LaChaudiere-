@@ -4,9 +4,15 @@ class ImageEvenement {
 
   ImageEvenement({required this.url, required this.legende});
 
-  factory ImageEvenement.fromJson(Map<String, dynamic> json) {
+  factory ImageEvenement.fromJson(Map<String, dynamic> json, String baseUrl) {
+    String relativeUrl = json['url_image'] as String? ?? json['url'] as String? ?? '';
+    
+    String finalUrl = relativeUrl.startsWith('/') 
+        ? baseUrl + relativeUrl 
+        : relativeUrl;
+
     return ImageEvenement(
-      url: json['url_image'] as String? ?? json['url'] as String? ?? '',
+      url: finalUrl,
       legende: json['legende'] as String? ?? '',
     );
   }

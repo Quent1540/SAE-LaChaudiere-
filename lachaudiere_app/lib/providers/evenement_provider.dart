@@ -48,7 +48,10 @@ class EvenementProvider extends ChangeNotifier {
   Future<void> fetchAndApplyDetails(Evenement evenement) async {
     try {
       final detailsJson = await _apiService.fetchEvenementDetails(evenement.id);
-      evenement.updateWithDetails(detailsJson);
+      
+      final domainUrl = _apiService.domainUrl;
+      evenement.updateWithDetails(detailsJson, domainUrl);
+      
       notifyListeners();
     } catch (e) {
       print("Erreur de chargement des détails pour l'événement ${evenement.id}: $e");
