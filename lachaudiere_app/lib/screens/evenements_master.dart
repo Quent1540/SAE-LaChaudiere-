@@ -18,7 +18,7 @@ class EvenementsMaster extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => evenementProvider.fetchEvenements(),
+            onPressed: () => evenementProvider.refreshData(),
           ),
         ],
       ),

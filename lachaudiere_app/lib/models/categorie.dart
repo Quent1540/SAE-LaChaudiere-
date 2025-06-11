@@ -5,11 +5,11 @@ class Categorie {
 
   Categorie({required this.id, required this.libelle, this.description});
 
-  factory Categorie.fromJson(Map<String, dynamic> json) {
+  factory Categorie.fromJson(Map<String, dynamic> categorieJson) {
     return Categorie(
-      id: json['id_categorie'] as int? ?? 0,
-      libelle: json['libelle'] as String? ?? 'Non classé',
-      description: json['description'] as String?,
+      id: categorieJson['id_categorie'] as int? ?? 0,
+      libelle: categorieJson['libelle'] as String? ?? 'Non classé',
+      description: categorieJson['description'] as String?,
     );
   }
 }

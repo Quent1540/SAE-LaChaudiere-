@@ -1,14 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:lachaudiere_app/models/evenement.dart';
+import 'package:lachaudiere_app/providers/evenement_provider.dart';
 
-class EvenementDetails extends StatelessWidget {
+class EvenementDetails extends StatefulWidget {
   final Evenement evenement;
-
   const EvenementDetails({super.key, required this.evenement});
 
   @override
+  State<EvenementDetails> createState() => _EvenementDetailsState();
+}
+
+class _EvenementDetailsState extends State<EvenementDetails> {
+  bool _isLoadingDetails = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDetails();
+  }
+
+  Future<void> _loadDetails() async {
+    await Provider.of<EvenementProvider>(context, listen: false)
+        .fetchAndApplyDetails(widget.evenement);
+    if (mounted) {
+      setState(() {
+        _isLoadingDetails = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final evenement = widget.evenement;
+
     return Scaffold(
       appBar: AppBar(title: Text(evenement.titre)),
       body: SingleChildScrollView(
@@ -18,31 +43,54 @@ class EvenementDetails extends StatelessWidget {
           children: [
             Text(evenement.titre, style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 8),
-            Chip(
-              label: Text(evenement.categorie.libelle),
-              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            ),
-            const SizedBox(height: 16),
-            _buildDateInfo(context),
+            Chip(label: Text(evenement.categorie.libelle)),
             const Divider(height: 32),
             Text('Description', style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 8),
-            Text(
-              evenement.description?.isNotEmpty == true ? evenement.description! : "Aucune description.",
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
+            _isLoadingDetails
+                ? const Center(child: CircularProgressIndicator())
+                : Text(
+                    evenement.description ?? "Aucune description.",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+            const Divider(height: 32),
+            Text('Images', style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 8),
+            _isLoadingDetails
+                ? const SizedBox.shrink()
+                : _buildImages(evenement),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDateInfo(BuildContext context) {
-    final format = DateFormat.yMMMMEEEEd('fr_FR').add_Hm();
-    String dateText = 'Le ${format.format(evenement.dateDebut)}';
-    if (evenement.dateFin != null) {
-      dateText = 'Du ${format.format(evenement.dateDebut)}\nau ${format.format(evenement.dateFin!)}';
+  Widget _buildImages(Evenement evenement) {
+    if (evenement.images.isEmpty) {
+      return const Text("Aucune image pour cet événement.");
     }
-    return Text(dateText, style: Theme.of(context).textTheme.titleMedium);
+    return Column(
+      children: evenement.images.map((image) {
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              Image.network(
+                image.url,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 200,
+                errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 50),
+              ),
+              if (image.legende.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(image.legende, style: Theme.of(context).textTheme.titleSmall),
+                ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
   }
 }
