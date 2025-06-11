@@ -32,6 +32,16 @@ h2 {
     margin-bottom: 0.5rem;
 }
 
+#reset-filtre {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #2a4d69;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
 #categories-list a {
     display: block;
     padding: 0.6rem 1rem;

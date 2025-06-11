@@ -9,4 +9,5 @@ composer.lock
 db_data/
 package-lock.json
 js/out.js
+js/out.js.map
 /node_modules/

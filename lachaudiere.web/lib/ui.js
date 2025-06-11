@@ -55,7 +55,16 @@ async function afficherEvenementsParCategorie(id) {
         if (filtered.length > 0) {
             const source = document.getElementById('event-list-template').innerHTML;
             const template = Handlebars.compile(source);
-            eventList.innerHTML = template({ events: filtered });
+            eventList.innerHTML = `
+        <a href="#" id="reset-filtre">Tout réafficher</a>
+        ${template({ events: filtered })}
+    `;
+            document.getElementById('reset-filtre').onclick = async (e) => {
+                e.preventDefault();
+                selectedCategoryId = null;
+                document.getElementById('categorie-selectionnee').innerHTML = '';
+                await displayEventsMoisCourant();
+            };
         } else {
             eventList.innerHTML = "Aucun événement pour ce mois dans cette catégorie.";
         }
@@ -66,6 +75,8 @@ async function afficherEvenementsParCategorie(id) {
 }
 
 //Affichage de la liste des catégories
+let selectedCategoryId = null;
+
 export async function afficherCategories() {
     const container = document.getElementById('categories-list');
     container.innerHTML = 'Chargement...';
@@ -80,9 +91,16 @@ export async function afficherCategories() {
 
         container.querySelectorAll('a[data-id]').forEach(lien => {
             const id = lien.getAttribute('data-id');
-            lien.onclick = (e) => {
+            lien.onclick = async (e) => {
                 e.preventDefault();
-                afficherEvenementsParCategorie(id);
+                if (selectedCategoryId === id) {
+                    selectedCategoryId = null;
+                    document.getElementById('categorie-selectionnee').innerHTML = '';
+                    await displayEventsMoisCourant();
+                } else {
+                    selectedCategoryId = id;
+                    await afficherEvenementsParCategorie(id);
+                }
             };
         });
     } catch (err) {
