@@ -16,6 +16,21 @@
 		<h2>Événements</h2>
 		<div id="categorie-selectionnee"></div>
 		<div id="event-list"></div>
+
+		<div id="event-filters">
+			<button data-filtre="tous">Tous</button>
+			<button data-filtre="passes">Passés</button>
+			<button data-filtre="actuels">Actuels</button>
+			<button data-filtre="futurs">Futurs</button>
+		</div>
+
+		<div id="event-sort">
+			<label>Trier par :</label>
+			<button data-tri="date_asc">Date ↑</button>
+			<button data-tri="date_desc">Date ↓</button>
+			<button data-tri="titre">Titre A→Z</button>
+		</div>
+
 	</section>
 </main>
 <script id="categories-list-template" type="text/x-handlebars-template">

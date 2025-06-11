@@ -1,5 +1,9 @@
 //Affichage de la catégorie de l'image
 import {url} from "./config.js";
+
+let currentFilter = "actuels";
+let currentSort = "date_asc";
+
 //Affichage des événements courants
 export async function displayEventsMoisCourant() {
     const eventList = document.getElementById('event-list');
@@ -105,4 +109,75 @@ export async function afficherCategories() {
     } catch (err) {
         container.textContent = "Erreur lors du chargement des catégories";
     }
+}
+
+let allEvenements = [];
+
+export async function displayEvents(filtre = "actuels", tri = "date_asc") {
+    const eventList = document.getElementById('event-list');
+    eventList.innerHTML = 'Chargement...';
+
+    try {
+        if (allEvenements.length === 0) {
+            const response = await fetch(`${url}/api/evenements`);
+            const data = await response.json();
+            allEvenements = data.evenements.map(e => e.evenement);
+        }
+
+        const ajd = new Date();
+
+        let filtered = allEvenements.filter(ev => {
+            const date = new Date(ev.date_debut);
+            switch (filtre) {
+                case "passes": return date < ajd;
+                case "futurs": return date > ajd;
+                case "actuels": return date.getMonth() === ajd.getMonth() && date.getFullYear() === ajd.getFullYear();
+                case "tous":
+                default: return true;
+            }
+        });
+
+        // Tri selon le critère
+        filtered.sort((a, b) => {
+            switch (tri) {
+                case "date_asc":
+                    return new Date(a.date_debut) - new Date(b.date_debut);
+                case "date_desc":
+                    return new Date(b.date_debut) - new Date(a.date_debut);
+                case "titre":
+                    return a.titre.localeCompare(b.titre);
+                default:
+                    return 0;
+            }
+        });
+
+        const source = document.getElementById('event-list-template').innerHTML;
+        const template = Handlebars.compile(source);
+        eventList.innerHTML = template({ events: filtered });
+
+    } catch (err) {
+        eventList.textContent = "Erreur lors du chargement des événements.";
+        console.error(err);
+    }
+}
+
+
+export function activerFiltres() {
+    const boutons = document.querySelectorAll('#event-filters button');
+    boutons.forEach(b => {
+        b.onclick = () => {
+            currentFilter = b.getAttribute('data-filtre');
+            displayEvents(currentFilter, currentSort);
+        };
+    });
+}
+
+export function activerTri() {
+    const boutons = document.querySelectorAll('#event-sort button');
+    boutons.forEach(b => {
+        b.onclick = () => {
+            currentSort = b.getAttribute('data-tri');
+            displayEvents(currentFilter, currentSort);
+        };
+    });
 }
