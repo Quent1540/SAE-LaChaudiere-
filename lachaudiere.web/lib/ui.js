@@ -106,3 +106,54 @@ export async function afficherCategories() {
         container.textContent = "Erreur lors du chargement des catégories";
     }
 }
+
+let allEvenements = [];
+
+export async function displayEvents(filtre = "actuels") {
+    const eventList = document.getElementById('event-list');
+    eventList.innerHTML = 'Chargement...';
+
+    try {
+        if (allEvenements.length === 0) {
+            const response = await fetch(`${url}/api/evenements`);
+            const data = await response.json();
+            allEvenements = data.evenements.map(e => e.evenement);
+        }
+
+        const ajd = new Date();
+
+        const filtered = allEvenements.filter(ev => {
+            const date = new Date(ev.date_debut);
+            switch (filtre) {
+                case "passes":
+                    return date < ajd;
+                case "futurs":
+                    return date > ajd;
+                case "actuels":
+                    return date.getMonth() === ajd.getMonth() && date.getFullYear() === ajd.getFullYear();
+                case "tous":
+                default:
+                    return true;
+            }
+        });
+
+        const source = document.getElementById('event-list-template').innerHTML;
+        const template = Handlebars.compile(source);
+        eventList.innerHTML = template({ events: filtered });
+
+    } catch (err) {
+        eventList.textContent = "Erreur lors du chargement des événements.";
+        console.error(err);
+    }
+}
+
+export function activerFiltres() {
+    const boutons = document.querySelectorAll('#event-filters button');
+    boutons.forEach(b => {
+        b.onclick = () => {
+            const filtre = b.getAttribute('data-filtre');
+            displayEvents(filtre);
+        };
+    });
+}
+
