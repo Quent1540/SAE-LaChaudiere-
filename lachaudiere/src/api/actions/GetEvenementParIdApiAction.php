@@ -6,6 +6,7 @@ use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+//Action API pour récup un événement par son id
 class GetEvenementParIdApiAction {
     private EvenementServiceInterface $evenementService;
 
@@ -18,11 +19,12 @@ class GetEvenementParIdApiAction {
             $id_evenement = (int)$args['id_evenement'];
             $evenement = $this->evenementService->getEvenementParId($id_evenement);
 
+            //Vérif si l'événement est publié
             if (!$evenement['est_publie']) {
                  $response->getBody()->write(json_encode(['error' => 'Ressource non disponible ou non publiée.']));
                  return $response->withStatus(404)->withHeader('Content-Type', 'application/json; charset=utf-8');
             }
-
+            //Structure de la réponse JSON
             $data = [
                 'type' => 'resource',
                 'evenement' => [
@@ -33,6 +35,7 @@ class GetEvenementParIdApiAction {
                     'date_debut' => $evenement['date_debut'],
                     'date_fin' => $evenement['date_fin'],
                     'id_categorie' => $evenement['id_categorie'],
+                    //Transformation des images pour la réponse
                     'images' => array_map(fn($img) => ['url' => $img['url_image'], 'legende' => $img['legende']], $evenement['images'] ?? [])
                 ],
                 'links' => [

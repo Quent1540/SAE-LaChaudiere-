@@ -5,6 +5,7 @@ use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+//Action API pour récupérer la liste des événements d'une catégorie
 class GetEvenementsParCategorieApiAction {
     private EvenementServiceInterface $evenement;
 
@@ -13,10 +14,14 @@ class GetEvenementsParCategorieApiAction {
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response {
+        //Récupération de la période de la requête
         $periodes = explode(',', $request->getQueryParams()['periode'] ?? '');
         $now = date('Y-m-d H:i:s');
+        //Recupération de l'id de la catégorie depuis les arguments de la requête
         $id_categorie = (int)$args['id_categorie'];
+        //Recupération des événements de la catégorie via le service métier
         $evenements = $this->evenement->getEvenementsParCategorie($id_categorie);
+
         //Filtrer les événements selon les périodes demandées
         if ($periodes && $periodes[0] !== '') {
             $evenements = array_filter($evenements, function($event) use ($periodes, $now) {
@@ -28,10 +33,13 @@ class GetEvenementsParCategorieApiAction {
                 return false;
             });
         }
+
         //Pour trier par date de début
         usort($evenements, function($a, $b) {
             return strtotime($a['date_debut']) <=> strtotime($b['date_debut']);
         });
+
+        //Structure de la réponse JSON
         $data = [
             'type' => 'collection',
             'count' => count($evenements),

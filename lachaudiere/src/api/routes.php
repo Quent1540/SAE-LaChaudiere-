@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Slim\App;
 
+//Routes des APIs
 return function (App $app): App{
     $app->get('/api/categories', \lachaudiere\api\actions\GetCategoriesApiAction::class);
     $app->get('/api/evenements', \lachaudiere\api\actions\GetEvenementsApiAction::class);
