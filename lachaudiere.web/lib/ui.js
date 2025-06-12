@@ -415,7 +415,9 @@ export async function afficherDetailEvenement(id) {
 
     if (evenement.images && evenement.images.length > 0) {
         evenement.images.forEach(image => {
-            image.url = `${url}${image.url}`; 
+            if (image.url && !image.url.startsWith('http')) {
+                image.url = `${url}${image.url}`; 
+            }
         });
     }
     evenement.descriptionHtml = marked.parse(evenement.description || "");
