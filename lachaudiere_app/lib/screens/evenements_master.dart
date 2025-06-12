@@ -62,12 +62,10 @@ class EvenementsMaster extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (provider.errorMessage != null && evenements.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text("Erreur: ${provider.errorMessage}", textAlign: TextAlign.center),
-              ),
-            );
+            return Center(child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text("Erreur: ${provider.errorMessage}", textAlign: TextAlign.center),
+            ));
           }
           if (evenements.isEmpty) {
             return const Center(child: Text('Aucun événement trouvé.'));
