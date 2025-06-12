@@ -18,6 +18,15 @@ services:
     depends_on:
       - sql
     command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+  
+  web-client:
+    image: nginx:alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./lachaudiere.web:/usr/share/nginx/html:ro
+    networks:
+      - lachaudiere.net
 
   sql:
     image: mariadb:latest
