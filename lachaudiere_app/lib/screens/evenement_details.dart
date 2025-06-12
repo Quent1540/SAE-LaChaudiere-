@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:lachaudiere_app/models/evenement.dart';
 import 'package:lachaudiere_app/providers/evenement_provider.dart';
 import 'package:lachaudiere_app/providers/theme_provider.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+
 
 class EvenementDetails extends StatefulWidget {
   final Evenement evenement;
@@ -63,11 +65,24 @@ class _EvenementDetailsState extends State<EvenementDetails> {
             Text('Description', style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 8),
             _isLoadingDetails
-                ? const Center(child: CircularProgressIndicator())
-                : Text(
-                    evenement.description ?? "Aucune description.",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
+              ? const SizedBox(
+                  height: 100,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    return ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: 0,
+                        maxHeight: double.infinity,
+                      ),
+                      child: MarkdownBody(
+                        data: evenement.description ?? "Aucune description.",
+                      ),
+                    );
+                  },
+                ),
+
             const Divider(height: 32),
             Text('Images', style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 8),
