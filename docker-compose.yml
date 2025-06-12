@@ -13,8 +13,6 @@ services:
       - ./lachaudiere.core:/var/php
     networks:
       - lachaudiere.net
-    depends_on:
-      - sql
     working_dir: /var/php
     command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public /var/php/public/index.php"
     tty: true
@@ -41,7 +39,7 @@ services:
         aliases:
           - sql.db
     volumes:
-      - ./db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d
 
   adminer:
@@ -50,3 +48,6 @@ services:
       - "8080:8080"
     networks:
       - lachaudiere.net
+
+volumes:
+  db_data:
