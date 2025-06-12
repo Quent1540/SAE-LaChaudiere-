@@ -348,7 +348,12 @@ export async function afficherDetailEvenement(id) {
     const response = await fetch(`${url}/api/evenements/${id}`);
     const data = await response.json();
     const evenement = data.evenement;
-    //Converti la description markdown en html, sinon ça bug
+
+    if (evenement.images && evenement.images.length > 0) {
+        evenement.images.forEach(image => {
+            image.url = `${url}${image.url}`; 
+        });
+    }
     evenement.descriptionHtml = marked.parse(evenement.description || "");
     const source = document.getElementById('event-detail-template').innerHTML;
     const template = Handlebars.compile(source);
