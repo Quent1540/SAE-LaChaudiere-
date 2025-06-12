@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:lachaudiere_app/providers/evenement_provider.dart';
 import 'package:lachaudiere_app/screens/evenement_preview.dart';
 import 'package:lachaudiere_app/screens/evenement_details.dart';
+import 'package:lachaudiere_app/providers/theme_provider.dart';
 
 class EvenementsMaster extends StatelessWidget {
   const EvenementsMaster({super.key});
@@ -16,10 +17,23 @@ class EvenementsMaster extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Événements La Chaudière'),
         actions: [
+
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => evenementProvider.refreshData(),
           ),
+          IconButton(
+            icon: Consumer<ThemeProvider>(
+              builder: (context, themeProvider, _) {
+                return Icon(
+                  themeProvider.themeMode == ThemeMode.dark
+                      ? Icons.sunny
+                      : Icons.nightlight_round_rounded
+                );
+              },
+            ),
+            onPressed: () => Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
+          )
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56.0),
