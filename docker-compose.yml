@@ -18,15 +18,13 @@ services:
     tty: true
 
   web-client:
-    image: node:20.12-alpine
-    working_dir: /app
-    volumes:
-      - ./lachaudiere.web:/app
+    image: nginx:alpine
     ports:
       - "3000:80"
+    volumes:
+      - ./lachaudiere.web:/usr/share/nginx/html:ro
     networks:
       - lachaudiere.net
-    command: sh -c "npm install && npx http-server -p 80"
 
   sql:
     image: mariadb:11.3.2
