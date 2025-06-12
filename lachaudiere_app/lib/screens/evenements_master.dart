@@ -21,17 +21,39 @@ class EvenementsMaster extends StatelessWidget {
             onPressed: () => evenementProvider.refreshData(),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(56.0),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Rechercher un événement...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              onChanged: (value) {
+                evenementProvider.updateSearchQuery(value);
+              },
+            ),
+          ),
+        ),
       ),
       body: Consumer<EvenementProvider>(
         builder: (context, provider, child) {
+          final evenements = provider.evenements;
+
           if (provider.isLoading && evenements.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
           if (provider.errorMessage != null && evenements.isEmpty) {
-            return Center(child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text("Erreur: ${provider.errorMessage}", textAlign: TextAlign.center),
-            ));
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text("Erreur: ${provider.errorMessage}", textAlign: TextAlign.center),
+              ),
+            );
           }
           if (evenements.isEmpty) {
             return const Center(child: Text('Aucun événement trouvé.'));
