@@ -8,10 +8,13 @@
 <body>
 <main>
 	<h1>Bienvenue sur LaChaudiereAgenda</h1>
+	<!-- Liste des catégories -->
 	<section id="categories">
 		<h2>Catégories</h2>
 		<div id="categories-list">Chargement...</div>
 	</section>
+
+	<!-- Section des événements -->
 	<section id="evenements">
 		<h2>Événements</h2>
 		<div id="categorie-selectionnee"></div>
@@ -20,6 +23,7 @@
 		<div id="event-list"></div>
 		<div id="event-detail"></div>
 
+		<!-- Filtres d'événements (tous, passés, actuels, futurs) -->
 		<div id="event-filters">
 			<button data-filtre="tous">Tous</button>
 			<button data-filtre="passes">Passés</button>
@@ -27,6 +31,7 @@
 			<button data-filtre="futurs">Futurs</button>
 		</div>
 
+		<!-- Options de tri des événements -->
 		<div id="event-sort">
 			<label>Trier par :</label>
 			<button data-tri="date_asc">Date ↑</button>
@@ -35,9 +40,10 @@
 		</div>
 
 		<button id="afficher-favoris">Voir mes favoris</button>
-
 	</section>
 </main>
+
+<!-- Template pour la liste des catégories -->
 <script id="categories-list-template" type="text/x-handlebars-template">
 	<ul>
 		{{#each categories}}
@@ -47,9 +53,13 @@
 		{{/each}}
 	</ul>
 </script>
+
+<!-- Template pour la catégorie sélectionnée -->
 <script id="categorie-selectionnee-template" type="text/x-handlebars-template">
 	<h3>Catégorie : {{libelle}}</h3>
 </script>
+
+<!-- Template pour la liste des événements -->
 <script id="event-list-template" type="text/x-handlebars-template">
 	<ul>
 		{{#each events}}
@@ -57,21 +67,26 @@
 			<strong>{{titre}}</strong> — {{artiste}}<br>
 			Date : {{date_debut}}<br>
 			Catégorie : {{id_categorie}}<br>
+			<!-- Étoile pour marquer comme favori -->
 			<span class="favori-star" data-id="{{id}}">
     			{{#if (isFavori id)}}
         			&#9733;
     			{{else}}
         			&#9734;
     			{{/if}}
-</span>
+			</span>
 			<button class="event-detail-btn" data-id="{{id}}">Détail</button>
 		</li>
 		{{/each}}
 	</ul>
 </script>
+
+<!-- Template pour le détail d'un événement -->
 <script id="event-detail-template" type="text/x-handlebars-template">
 	<h3>{{titre}}</h3>
+
 	<div>
+		<!-- Images de l'événement -->
 		{{#if images.length}}
 		{{#each images}}
 		<img src="{{url}}" alt="{{legende}}" style="max-width:300px;"><br>
@@ -79,17 +94,24 @@
 		{{/each}}
 		{{/if}}
 	</div>
+
 	<div>
 		<strong>Date :</strong> {{date_debut}} → {{date_fin}}<br>
 		<strong>Tarif :</strong> {{tarif}}<br>
 		<strong>Description :</strong>
 		<div class="event-description">{{{descriptionHtml}}}</div>
 	</div>
+
 	<button id="close-detail">Fermer</button>
 </script>
 
+<!-- Pour le rendu des templates Handlebars -->
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+
+<!-- Pour convertir le Markdown en HTML -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- Script principal -->
 <script src="./index.js" type="module"></script>
 </body>
 </html>
