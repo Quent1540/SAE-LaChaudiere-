@@ -5,12 +5,12 @@ networks:
 services:
   app:
     build:
-      context: build
-      dockerfile: 8.4-cli.Dockerfile
+      context: ./docker
+      dockerfile: Dockerfile
     ports:
-      - "12345:80"
+      - "8000:80"
     volumes:
-      - ./lachaudiere/:/var/php
+      - ./lachaudiere.core:/var/php
       - ./images/img:/var/php/public/img
     working_dir: /var/php/src
     networks:
@@ -18,18 +18,21 @@ services:
     depends_on:
       - sql
     command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
-  
+    tty: true
+
   web-client:
-    image: nginx:alpine
+    image: node:20.12-alpine
+    working_dir: /app
+    volumes:
+      - ./lachaudiere.web:/app
     ports:
       - "3000:80"
-    volumes:
-      - ./lachaudiere.web:/usr/share/nginx/html:ro
     networks:
       - lachaudiere.net
+    command: sh -c "npm install && npx http-server -p 80"
 
   sql:
-    image: mariadb:latest
+    image: mariadb:11.3.2
     env_file:
       - .database_env
     ports:
@@ -40,19 +43,11 @@ services:
           - sql.db
     volumes:
       - ./db_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
 
   adminer:
-    image: adminer
+    image: adminer:4.8.1
     ports:
-      - "12346:8080"
-    networks:
-      - lachaudiere.net
-
-  web:
-    image: nginx:alpine
-    ports:
-      - "12347:80"
-    volumes:
-      - ./lachaudiere.web:/usr/share/nginx/html:ro
+      - "8080:8080"
     networks:
       - lachaudiere.net
