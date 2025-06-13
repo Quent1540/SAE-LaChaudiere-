@@ -12,8 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('fr_FR', null);
 
-  runApp(const LaChaudiereApp());
-}
+  runApp(const LaChaudiereApp());}
 
 class LaChaudiereApp extends StatelessWidget {
   const LaChaudiereApp({super.key});
