@@ -9,6 +9,7 @@ use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use lachaudiere\webui\providers\AuthnProvider;
 use lachaudiere\webui\actions\AddEvenementAction;
 
+//Config des dépendances pour l'application
 return [
     'evenementService' => \DI\autowire(EvenementService::class),
     'imagesEvenementService' => \DI\autowire(ImagesEvenementService::class),
