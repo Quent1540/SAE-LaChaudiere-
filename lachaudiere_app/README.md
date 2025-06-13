@@ -50,7 +50,9 @@ Elle consomme les données fournies par le backend **LaChaudiereAgenda.core** vi
         - Catégorie (ordre alphabétique).
           ![img.png](img/img12.png)
     - Gestion d’un thème clair / sombre via un provider.
+      ![img.png](img/img13.png)
     - Persistance des données locales via SQLite.
+    <br> Seule fonctionnalité qui n'a pas été fait.
 
 ---
 
