@@ -37,6 +37,7 @@ Elle consomme les données fournies par le backend **LaChaudiereAgenda.core** vi
       ![img.png](img/img5.png)
 3. **Fonctions étendues**
     - Filtrage des événements par catégorie.
+      ![img.png](img/img6.png)
     - Tri des événements selon plusieurs critères :
         - Date ascendante.
         - Date descendante.
