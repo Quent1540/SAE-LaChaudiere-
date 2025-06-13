@@ -5,10 +5,11 @@ use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
-use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\MarkdownConverter;
 use Slim\Exception\HttpNotFoundException;
 
-//Action pour afficher les détails d'un événement
 class GetEvenementDetailAction {
     private EvenementServiceInterface $evenementService;
 
@@ -18,15 +19,22 @@ class GetEvenementDetailAction {
 
     public function __invoke(Request $request, Response $response, array $args): Response {
         try {
-            //Récup l'id de l'événement depuis les paramètres de l'URL
             $id_evenement = (int)$args['id'];
             $evenement = $this->evenementService->getEvenementParId($id_evenement);
 
-            //Convertir la description Markdown en HTML
-            $converter = new CommonMarkConverter();
+            $config = [
+                'html_input' => 'strip',
+
+                'allow_unsafe_links' => false,
+            ];
+
+            $environment = new Environment($config);
+            $environment->addExtension(new CommonMarkCoreExtension());
+            
+            $converter = new MarkdownConverter($environment);
+
             $htmlDescription = $converter->convert($evenement['description'] ?? '')->getContent();
 
-            //Rendu de la vue avec Twig
             $view = Twig::fromRequest($request);
             return $view->render($response, 'evenementDetail.twig', [
                 'evenement' => $evenement,
