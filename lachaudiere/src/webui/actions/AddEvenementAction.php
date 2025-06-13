@@ -9,8 +9,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 
-class AddEvenementAction
-{
+//Action pour ajouter un événement
+class AddEvenementAction {
     private EvenementServiceInterface $evenementService;
     private AuthnProviderInterface $authProvider;
 
@@ -22,11 +22,11 @@ class AddEvenementAction
         $this->authProvider = $authProvider;
     }
 
-    public function __invoke(Request $request, Response $response): Response
-    {
+    public function __invoke(Request $request, Response $response): Response {
         $view = Twig::fromRequest($request);
         $data = $request->getParsedBody();
 
+        //Vérif du token CSRF
         try {
             CsrfTokenProvider::check($data['csrf_token'] ?? null);
         } catch (CsrfTokenException $e) {
@@ -34,12 +34,14 @@ class AddEvenementAction
                 'message' => 'Erreur de sécurité. Le formulaire a peut-être expiré. Veuillez réessayer.'
             ]);
         }
-        
+
+        //Recup, vide et valide le titre
         $titre = trim($data['titre'] ?? '');
         if (empty($titre)) {
             return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Le titre est obligatoire.']);
         }
-        
+
+        //L'utilisateur doit être connecté
         $user = $this->authProvider->getSignedInUser();
         if (!$user) {
             return $view->render($response, 'error.twig', ['message' => 'Vous devez être connecté.']);
@@ -57,12 +59,14 @@ class AddEvenementAction
                 'legende' => $data['legende'] ?? 'Image principale',
                 'id_utilisateur_creation' => $user->id_utilisateur,
             ];
-            
+
+            //Récup le fichier image uploadé
             $uploadedFiles = $request->getUploadedFiles();
             $imageFile = $uploadedFiles['image'] ?? null;
-            
+
             $this->evenementService->createEvenementWithImage($eventData, $imageFile);
 
+            //Affiche la page de succès
             return $view->render($response, 'evenementCree.twig', [
                 'success' => true,
                 'titre' => $titre

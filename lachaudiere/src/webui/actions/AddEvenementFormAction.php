@@ -6,6 +6,7 @@ use Slim\Views\Twig;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+//Action qui affiche le formulaire de création d'un événement
 class AddEvenementFormAction {
     protected $categoriesService;
 

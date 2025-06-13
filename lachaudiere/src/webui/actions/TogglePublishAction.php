@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteContext;
 
+//Action pour basculer l'état de publication d'un événement
 class TogglePublishAction {
     private EvenementServiceInterface $evenementService;
 
@@ -17,10 +18,14 @@ class TogglePublishAction {
 
     public function __invoke(Request $request, Response $response, array $args): Response {
         try {
+            //Récup des données du formulaire POST
             $data = $request->getParsedBody();
+            //Vérification du token CSRF
             CsrfTokenProvider::check($data['csrf_token'] ?? null);
 
+            //Récup de l'id de l'événement depuis les params d'URL
             $id_evenement = (int)$args['id'];
+            //Changer l'état de publication de l'événement
             $this->evenementService->togglePublishStatus($id_evenement);
 
         } catch (CsrfTokenException $e) {
@@ -29,6 +34,7 @@ class TogglePublishAction {
             error_log('Toggle Publish Error: ' . $e->getMessage());
         }
 
+        //Redirection vers la liste des événements
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
         $redirectUrl = $routeParser->urlFor('list_evenements');
 

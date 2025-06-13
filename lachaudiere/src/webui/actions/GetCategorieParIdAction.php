@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Slim\Exception\HttpNotFoundException;
 
+//Action afficher une catégorie par son id
 class GetCategorieParIdAction {
     private CategoriesServiceInterface $catalogue;
 
@@ -16,6 +17,7 @@ class GetCategorieParIdAction {
 
     public function __invoke(Request $request, Response $response, array $args): Response {
         try {
+            //Récup l'id dans les paramètres de l'URL
             $id = (int) $args['id'];
             $categorie = $this->catalogue->getCategorieById($id);
             $view = Twig::fromRequest($request);
