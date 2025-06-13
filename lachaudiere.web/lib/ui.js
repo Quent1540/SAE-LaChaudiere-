@@ -203,6 +203,7 @@ async function afficherEvenementsParCategorie(id) {
     } catch (err) {
         eventList.textContent = "Erreur lors du chargement des événements";
         catContainer.innerHTML = '';
+        console.error(err);
     }
 }
 
