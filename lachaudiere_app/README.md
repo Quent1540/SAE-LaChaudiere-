@@ -25,13 +25,16 @@ Elle consomme les données fournies par le backend **LaChaudiereAgenda.core** vi
 1. **Personnalisation de l’application**
     - Création d’une icône personnalisée.
     - Splash screen animé au lancement.
-    - ![img/img.png](img.png)
+    ![img.png](img/img.png)
 2. **Navigation et affichage**
     - Liste des événements affichée en ordre alphabétique.
+      ![img.png](img/img2.png)
     - Pour chaque événement, affichage du titre, de la catégorie, et des dates.
+      ![img.png](img/img3.png)
     - Recherche d’un événement par titre.
+      ![img.png](img/img4.png)
     - Affichage détaillé des informations d’un événement en cliquant dessus (mode master/détail).
-
+      ![img.png](img/img5.png)
 3. **Fonctions étendues**
     - Filtrage des événements par catégorie.
     - Tri des événements selon plusieurs critères :
