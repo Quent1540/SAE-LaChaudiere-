@@ -20,10 +20,12 @@ class Evenement extends Model {
         'id_utilisateur_creation',
     ];
 
+    //Un événement appartient à une catégorie
     public function categorie() {
         return $this->belongsTo(Categorie::class, 'id_categorie');
     }
 
+    //Un événement a plusieurs images
     public function images() {
         return $this->hasMany(ImagesEvenement::class, 'id_evenement');
     }
