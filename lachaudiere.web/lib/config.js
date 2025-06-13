@@ -1,1 +1,1 @@
-export const url = "http://localhost:12345";
+export const url = "http://docketu.iutnc.univ-lorraine.fr:12345"
