@@ -16,7 +16,7 @@ Ce projet a été réalisé dans le cadre de la **SAE (Situation d'Apprentissage
 L'application est déployée et accessible à l'adresse suivante :
 
 **[URL de l'application](urldocketu)**
-
+http://localhost:12347
 ## Fonctionnalités
 
 Le projet implémente l'ensemble des fonctionnalités demandées dans le cahier des charges, y compris les fonctions étendues.
