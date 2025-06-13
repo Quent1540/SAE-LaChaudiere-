@@ -3,8 +3,7 @@ namespace lachaudiere\application_core\application\useCases;
 
 use lachaudiere\application_core\domain\entities\Categorie;
 
-interface CategoriesServiceInterface
-{
+interface CategoriesServiceInterface {
     public function getCategories(): \Illuminate\Database\Eloquent\Collection;
     public function getCategorieById(int $id_categorie): ?Categorie;
 }

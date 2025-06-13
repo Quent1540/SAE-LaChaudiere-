@@ -46,6 +46,7 @@ class GetEvenementsParCategorieApiAction {
             'evenements' => array_map(function($event) {
                 return [
                     'evenement' => [
+                        'id' => $event['id_evenement'],
                         'titre' => $event['titre'],
                         'date_debut' => $event['date_debut'],
                         'date_fin' => $event['date_fin'],

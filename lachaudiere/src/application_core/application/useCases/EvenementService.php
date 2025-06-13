@@ -7,15 +7,16 @@ use Illuminate\Database\QueryException;
 use lachaudiere\application_core\domain\entities\Evenement;
 use Psr\Http\Message\UploadedFileInterface;
 
+//Service pour la gestion des événements
 class EvenementService implements EvenementServiceInterface {
 
     private ImagesEvenementServiceInterface $imagesService;
 
-    public function __construct(ImagesEvenementServiceInterface $imagesService)
-    {
+    public function __construct(ImagesEvenementServiceInterface $imagesService) {
         $this->imagesService = $imagesService;
     }
 
+    //Recup toutes les catégories
     public function getCategories(): array {
         try {
             $result = Categorie::all();
@@ -25,6 +26,7 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
+    //Recup tous les événements avec leurs catégories
     public function getEvenements(): array {
         try {
             $result = Evenement::with('categorie')->get();
@@ -36,6 +38,7 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
+    //Recup les événements d'une catégorie donnée
     public function getEvenementsParCategorie(int $id_categorie): array {
         try {
             $result = Evenement::where('id_categorie', $id_categorie)->get();
@@ -47,6 +50,7 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
+    //Recup les événements avec leurs catégories et images, triés par date de début
     public function getEvenementsAvecCategorie(): array {
         try {
             $evenements = Evenement::with(['categorie', 'images'])
@@ -58,6 +62,7 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
+    //Recup un événement par son id avec ses images et catégorie
     public function getEvenementParId(int $id_evenement): array {
         try {
             $evenement = Evenement::with(['images', 'categorie'])->findOrFail($id_evenement);
@@ -67,9 +72,8 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
-
-    public function togglePublishStatus(int $id_evenement): bool
-    {
+    //Bascule le statut de publication d'un événement (publié/non publié)
+    public function togglePublishStatus(int $id_evenement): bool {
         try {
             $evenement = Evenement::findOrFail($id_evenement);
             $evenement->est_publie = !$evenement->est_publie;
@@ -79,15 +83,17 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
-    public function createEvenementWithImage(array $data, ?UploadedFileInterface $imageFile): int
-    {
+    //Créé un événement et ajoute une image si fournie
+    public function createEvenementWithImage(array $data, ?UploadedFileInterface $imageFile): int {
         try {
+            //Transaction
             \Illuminate\Database\Capsule\Manager::beginTransaction();
 
             $evenement = new Evenement();
             $evenement->fill($data);
             $evenement->save();
-            
+
+            //Si une image est fournie est valide, on l'ajoute à l'événement
             if ($imageFile && $imageFile->getError() === UPLOAD_ERR_OK) {
                 $this->imagesService->uploadAndCreateImage(
                     $evenement->id_evenement,
