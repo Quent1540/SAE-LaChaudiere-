@@ -6,7 +6,7 @@ import 'package:lachaudiere_app/providers/theme_provider.dart'; // <-- Ajout
 import 'package:lachaudiere_app/screens/evenements_master.dart';
 import 'package:lachaudiere_app/services/api_service.dart';
 
-const String _baseUrl = "http://localhost:8000/api";
+const String _baseUrl = "http://localhost:12345/api";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
