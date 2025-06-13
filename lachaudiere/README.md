@@ -49,9 +49,9 @@ docker compose up --build
 
 # Accès
 
-### Admin Web : http://localhost:8000
+### Admin Web : http://localhost:12345
 
-### Base de données Adminer : http://localhost:8080
+### Base de données Adminer : http://localhost:12346
 
 ### Connexion Adminer :
 
