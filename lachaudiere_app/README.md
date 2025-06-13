@@ -44,8 +44,11 @@ Elle consomme les données fournies par le backend **LaChaudiereAgenda.core** vi
          ![img.png](img/img8.png)
          ![img.png](img/img9.png)
         - Date descendante.
+          ![img.png](img/img10.png)
         - Titre (ordre alphabétique).
+          ![img.png](img/img11.png)
         - Catégorie (ordre alphabétique).
+          ![img.png](img/img12.png)
     - Gestion d’un thème clair / sombre via un provider.
     - Persistance des données locales via SQLite.
 
