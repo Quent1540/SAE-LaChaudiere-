@@ -41,7 +41,8 @@ Elle consomme les données fournies par le backend **LaChaudiereAgenda.core** vi
       ![img.png](img/img7.png)
     - Tri des événements selon plusieurs critères :
         - Date ascendante.
-      
+         ![img.png](img/img8.png)
+         ![img.png](img/img9.png)
         - Date descendante.
         - Titre (ordre alphabétique).
         - Catégorie (ordre alphabétique).
