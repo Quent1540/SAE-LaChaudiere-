@@ -11,6 +11,7 @@ class Categorie extends Model {
 
     protected $fillable = ['libelle', 'description'];
 
+    //Une catégorie a plusieurs événements
     public function evenements(): HasMany {
         return $this->hasMany(Evenement::class, 'id_categorie');
     }
