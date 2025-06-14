@@ -30,10 +30,10 @@ class RegisterAction {
 
         if ($request->getMethod() === 'POST') {
             $data = $request->getParsedBody();
-            $email = filter_var(trim($data['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+            $email = trim($data['email'] ?? '');
             $password = $data['password'] ?? '';
             $password_confirm = $data['password_confirm'] ?? '';
-            
+
             $submitted_data['email'] = $email;
 
             try {

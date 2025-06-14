@@ -13,3 +13,4 @@ package-lock.json
 lachaudiere.web/js/out.js
 lachaudiere.web/js/out.js.map
 /node_modules/
+lachaudiere/public/uploads/*

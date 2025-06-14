@@ -1,5 +1,5 @@
 <?php
-namespace lachaudiere\webui\actions; 
+namespace lachaudiere\webui\actions;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -12,7 +12,7 @@ use Slim\Routing\RouteContext;
 class SigninAction {
     protected AuthnProviderInterface $authProvider;
     protected Twig $view;
-   
+
     public function __construct(AuthnProviderInterface $authProvider, Twig $view) {
         $this->authProvider = $authProvider;
         $this->view = $view;
@@ -24,7 +24,7 @@ class SigninAction {
 
         if ($request->getMethod() === 'POST') {
             $data = $request->getParsedBody();
-            $email = filter_var(trim($data['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+            $email = trim($data['email'] ?? '');
             $password = $data['password'] ?? '';
             $submittedToken = $data['csrf_token'] ?? null;
 
@@ -34,7 +34,7 @@ class SigninAction {
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL) || empty($password)) {
                     throw new \InvalidArgumentException("Email valide et mot de passe sont requis.");
                 }
-                
+
                 if ($this->authProvider->signin($email, $password)) {
                     return $response->withHeader('Location', $router->urlFor('home'))->withStatus(302);
                 } else {
@@ -45,7 +45,7 @@ class SigninAction {
             } catch (\InvalidArgumentException $e) {
                 $error = $e->getMessage();
             } catch (\Exception $e) {
-                $error = $e->getMessage(); 
+                $error = $e->getMessage();
             }
 
             return $this->view->render($response, 'signin.twig', [

@@ -21,8 +21,8 @@ class AddCategorieAction {
             return $view->render($response->withStatus(403), 'ajouterCategorie.twig', ['erreur' => $erreur]);
         }
         
-        $libelle = filter_var(trim($data['libelle'] ?? ''), FILTER_SANITIZE_STRING);
-        $description = filter_var(trim($data['description'] ?? ''), FILTER_SANITIZE_STRING);
+        $libelle = strip_tags(trim($data['libelle'] ?? ''));
+        $description = strip_tags(trim($data['description'] ?? ''));
 
         if (empty($libelle)) {
             $erreur = "Le libellé est requis.";
@@ -39,7 +39,7 @@ class AddCategorieAction {
                 $erreur = "Erreur lors de la création : " . $e->getMessage();
             }
         }
-        
+
         return $view->render($response->withStatus(400), 'ajouterCategorie.twig', [
             'erreur' => $erreur
         ]);

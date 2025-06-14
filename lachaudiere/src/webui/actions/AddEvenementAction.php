@@ -33,11 +33,11 @@ class AddEvenementAction {
             ]);
         }
 
-        $titre = filter_var(trim($data['titre'] ?? ''), FILTER_SANITIZE_STRING);
-        $description = filter_var(trim($data['description'] ?? ''), FILTER_SANITIZE_STRING);
-        $legende = filter_var(trim($data['legende'] ?? 'Image principale'), FILTER_SANITIZE_STRING);
-        
-        $tarif = filter_var($data['tarif'] ?? 0, FILTER_VALIDATE_FLOAT, ['flags' => FILTER_NULL_ON_FAILURE]);
+        $titre = strip_tags(trim($data['titre'] ?? ''));
+        $description = strip_tags(trim($data['description'] ?? ''));
+        $legende = strip_tags(trim($data['legende'] ?? 'Image principale'));
+        $tarif = strip_tags(trim($data['tarif'] ?? ''));
+
         $id_categorie = filter_var($data['id_categorie'] ?? null, FILTER_VALIDATE_INT, ['flags' => FILTER_NULL_ON_FAILURE]);
         $date_debut = $data['date_debut'] ?? null;
         $date_fin = $data['date_fin'] ?? null;
@@ -45,17 +45,14 @@ class AddEvenementAction {
         if (empty($titre)) {
             return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Le titre est obligatoire.']);
         }
-        if ($tarif === null || $tarif < 0) {
-            return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Le tarif doit être un nombre positif.']);
-        }
         if ($id_categorie === null) {
             return $view->render($response->withStatus(400), 'error.twig', ['message' => 'La catégorie est obligatoire et doit être valide.']);
         }
         if ($date_debut && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_debut)) {
-             return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Format de la date de début invalide.']);
+            return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Format de la date de début invalide.']);
         }
         if (!empty($date_fin) && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_fin)) {
-             return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Format de la date de fin invalide.']);
+            return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Format de la date de fin invalide.']);
         }
 
         $user = $this->authProvider->getSignedInUser();
