@@ -11,7 +11,7 @@
         <div style="color: green;">{{ success }}</div>
     {% endif %}
 
-    <form method="POST" action="/register">
+    <form method="POST" action="{{ url_for('register') }}">
         {{ csrf_input() }}
 
         <div class="form-group">
@@ -33,5 +33,5 @@
 
         <button type="submit">Créer l'utilisateur</button>
     </form>
-    <a href="/">Retour à l'accueil</a>
+    <a href="{{ url_for('home') }}">Retour à l'accueil</a>
 {% endblock %}

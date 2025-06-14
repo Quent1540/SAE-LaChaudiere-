@@ -7,7 +7,7 @@
     <div class="alert alert-danger">{{ erreur }}</div>
 {% endif %}
 
-<form method="post" action="/categorie/create">
+<form method="post" action="{{ url_for('create_categorie') }}">
     {{ csrf_input() }}
     <div>
         <label for="libelle">Libellé :</label>
@@ -23,5 +23,5 @@
 </form>
 
 <br>
-<a href="/">Retour à la page d'accueil</a>
+<a href="{{ url_for('home') }}">Retour à la page d'accueil</a>
 {% endblock %}
