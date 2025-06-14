@@ -1,8 +1,15 @@
-{# error.twig #}
-<h1>Erreur</h1>
-<p>{{ message }}</p>
-<form action="/signin" method="get" style="display:inline;">
-                    <button type="submit">Se connecter</button>
-                </form><br>
-<a href="/">Retour à l'accueil</a><br>
-<a href="/evenement/create">Retour à la création de box</a>
+{% extends "main.twig" %}
+
+{% block title %}Erreur{% endblock %}
+
+{% block content %}
+    <h2>Une erreur est survenue</h2>
+
+    <div class="alert alert-danger" style="background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+        <p><strong>Message :</strong> {{ message | default('Une erreur inattendue s\'est produite.') }}</p>
+    </div>
+
+    <a href="{{ url_for('home') }}" class="button-modern">Retour à la page d'accueil</a>
+    
+    <button onclick="window.history.back();" class="button-modern">Retour à la page précédente</button>
+{% endblock %}
