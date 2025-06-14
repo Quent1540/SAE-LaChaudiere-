@@ -9,7 +9,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 
-//Action pour ajouter un événement
 class AddEvenementAction {
     private EvenementServiceInterface $evenementService;
     private AuthnProviderInterface $authProvider;
@@ -26,7 +25,6 @@ class AddEvenementAction {
         $view = Twig::fromRequest($request);
         $data = $request->getParsedBody();
 
-        //Vérif du token CSRF
         try {
             CsrfTokenProvider::check($data['csrf_token'] ?? null);
         } catch (CsrfTokenException $e) {
@@ -35,13 +33,31 @@ class AddEvenementAction {
             ]);
         }
 
-        //Recup, vide et valide le titre
-        $titre = trim($data['titre'] ?? '');
+        $titre = filter_var(trim($data['titre'] ?? ''), FILTER_SANITIZE_STRING);
+        $description = filter_var(trim($data['description'] ?? ''), FILTER_SANITIZE_STRING);
+        $legende = filter_var(trim($data['legende'] ?? 'Image principale'), FILTER_SANITIZE_STRING);
+        
+        $tarif = filter_var($data['tarif'] ?? 0, FILTER_VALIDATE_FLOAT, ['flags' => FILTER_NULL_ON_FAILURE]);
+        $id_categorie = filter_var($data['id_categorie'] ?? null, FILTER_VALIDATE_INT, ['flags' => FILTER_NULL_ON_FAILURE]);
+        $date_debut = $data['date_debut'] ?? null;
+        $date_fin = $data['date_fin'] ?? null;
+
         if (empty($titre)) {
             return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Le titre est obligatoire.']);
         }
+        if ($tarif === null || $tarif < 0) {
+            return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Le tarif doit être un nombre positif.']);
+        }
+        if ($id_categorie === null) {
+            return $view->render($response->withStatus(400), 'error.twig', ['message' => 'La catégorie est obligatoire et doit être valide.']);
+        }
+        if ($date_debut && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_debut)) {
+             return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Format de la date de début invalide.']);
+        }
+        if (!empty($date_fin) && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_fin)) {
+             return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Format de la date de fin invalide.']);
+        }
 
-        //L'utilisateur doit être connecté
         $user = $this->authProvider->getSignedInUser();
         if (!$user) {
             return $view->render($response, 'error.twig', ['message' => 'Vous devez être connecté.']);
@@ -50,23 +66,21 @@ class AddEvenementAction {
         try {
             $eventData = [
                 'titre' => $titre,
-                'description' => $data['description'] ?? '',
-                'tarif' => $data['tarif'] ?? 0,
-                'date_debut' => $data['date_debut'] ?? null,
-                'date_fin' => $data['date_fin'] ?? null,
-                'id_categorie' => $data['id_categorie'] ?? null,
+                'description' => $description,
+                'tarif' => $tarif,
+                'date_debut' => $date_debut,
+                'date_fin' => empty($date_fin) ? null : $date_fin,
+                'id_categorie' => $id_categorie,
                 'est_publie' => isset($data['est_publie']) ? 1 : 0,
-                'legende' => $data['legende'] ?? 'Image principale',
+                'legende' => $legende,
                 'id_utilisateur_creation' => $user->id_utilisateur,
             ];
 
-            //Récup le fichier image uploadé
             $uploadedFiles = $request->getUploadedFiles();
             $imageFile = $uploadedFiles['image'] ?? null;
 
             $this->evenementService->createEvenementWithImage($eventData, $imageFile);
 
-            //Affiche la page de succès
             return $view->render($response, 'evenementCree.twig', [
                 'success' => true,
                 'titre' => $titre
