@@ -11,4 +11,5 @@ interface EvenementServiceInterface {
     public function togglePublishStatus(int $id_evenement): bool;
     public function getCategories(): array;
     public function getCategorieById(int $id_categorie): ?Categorie;
+    public function createCategorie(string $libelle, string $description): Categorie;
 }

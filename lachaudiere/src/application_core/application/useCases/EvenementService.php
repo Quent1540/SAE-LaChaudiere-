@@ -2,12 +2,12 @@
 namespace lachaudiere\application_core\application\useCases;
 
 use lachaudiere\application_core\application\exceptions\EvenementException;
+use lachaudiere\application_core\application\exceptions\ValidationException;
 use lachaudiere\application_core\domain\entities\Categorie;
-use Illuminate\Database\QueryException;
 use lachaudiere\application_core\domain\entities\Evenement;
+use Illuminate\Database\QueryException;
 use Psr\Http\Message\UploadedFileInterface;
 
-//Service pour la gestion des événements
 class EvenementService implements EvenementServiceInterface {
 
     private ImagesEvenementServiceInterface $imagesService;
@@ -16,7 +16,6 @@ class EvenementService implements EvenementServiceInterface {
         $this->imagesService = $imagesService;
     }
 
-    //Recup toutes les catégories
     public function getCategories(): array {
         try {
             $result = Categorie::all();
@@ -28,18 +27,15 @@ class EvenementService implements EvenementServiceInterface {
 
     public function getCategorieById(int $id_categorie): ?Categorie {
         try {
-            $result = Categorie::find($id_categorie);
-            return $result;
+            return Categorie::find($id_categorie);
         } catch (\Exception $e) {
             throw new EvenementException('Erreur lors de la récupération des catégories : ' . $e->getMessage());
         }
     }
 
-    //Recup tous les événements avec leurs catégories
     public function getEvenements(): array {
         try {
-            $result = Evenement::with('categorie')->get();
-            return $result->toArray();
+            return Evenement::with('categorie')->get()->toArray();
         } catch (QueryException $e) {
             throw new EvenementException('Erreur lors de la récupération des événements : ' . $e->getMessage());
         } catch (\Exception $e) {
@@ -47,11 +43,9 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
-    //Recup les événements d'une catégorie donnée
     public function getEvenementsParCategorie(int $id_categorie): array {
         try {
-            $result = Evenement::where('id_categorie', $id_categorie)->get();
-            return $result->toArray();
+            return Evenement::where('id_categorie', $id_categorie)->get()->toArray();
         } catch (QueryException $e) {
             throw new EvenementException('Erreur lors de la récupération des événements par catégorie : ' . $e->getMessage());
         } catch (\Exception $e) {
@@ -59,29 +53,25 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
-    //Recup les événements avec leurs catégories et images, triés par date de début
     public function getEvenementsAvecCategorie(): array {
         try {
-            $evenements = Evenement::with(['categorie', 'images'])
+            return Evenement::with(['categorie', 'images'])
                 ->orderBy('date_debut', 'asc')
-                ->get();
-            return $evenements->toArray();
+                ->get()
+                ->toArray();
         } catch (\Exception $e) {
             throw new EvenementException("Erreur lors de la récupération : " . $e->getMessage());
         }
     }
 
-    //Recup un événement par son id avec ses images et catégorie
     public function getEvenementParId(int $id_evenement): array {
         try {
-            $evenement = Evenement::with(['images', 'categorie'])->findOrFail($id_evenement);
-            return $evenement->toArray();
+            return Evenement::with(['images', 'categorie'])->findOrFail($id_evenement)->toArray();
         } catch (\Exception $e) {
             throw new EvenementException('Événement introuvable : ' . $e->getMessage());
         }
     }
 
-    //Bascule le statut de publication d'un événement (publié/non publié)
     public function togglePublishStatus(int $id_evenement): bool {
         try {
             $evenement = Evenement::findOrFail($id_evenement);
@@ -92,17 +82,33 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
-    //Créé un événement et ajoute une image si fournie
     public function createEvenementWithImage(array $data, ?UploadedFileInterface $imageFile): int {
+        $titre = strip_tags(trim($data['titre'] ?? ''));
+        $tarif = strip_tags(trim($data['tarif'] ?? ''));
+        $id_categorie = filter_var($data['id_categorie'] ?? null, FILTER_VALIDATE_INT, ['flags' => FILTER_NULL_ON_FAILURE]);
+        $date_debut = $data['date_debut'] ?? null;
+        $date_fin = $data['date_fin'] ?? null;
+
+        if (empty($titre)) {
+            throw new ValidationException('Le titre est obligatoire.');
+        }
+        if ($id_categorie === null) {
+            throw new ValidationException('La catégorie est obligatoire et doit être valide.');
+        }
+        if ($date_debut && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_debut)) {
+            throw new ValidationException('Format de la date de début invalide.');
+        }
+        if (!empty($date_fin) && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_fin)) {
+            throw new ValidationException('Format de la date de fin invalide.');
+        }
+
         try {
-            //Transaction
             \Illuminate\Database\Capsule\Manager::beginTransaction();
 
             $evenement = new Evenement();
             $evenement->fill($data);
             $evenement->save();
 
-            //Si une image est fournie est valide, on l'ajoute à l'événement
             if ($imageFile && $imageFile->getError() === UPLOAD_ERR_OK) {
                 $this->imagesService->uploadAndCreateImage(
                     $evenement->id_evenement,
@@ -110,14 +116,34 @@ class EvenementService implements EvenementServiceInterface {
                     $data['legende'] ?? null
                 );
             }
-            
-            \Illuminate\Database\Capsule\Manager::commit();
 
+            \Illuminate\Database\Capsule\Manager::commit();
             return $evenement->id_evenement;
 
         } catch (\Exception $e) {
             \Illuminate\Database\Capsule\Manager::rollback();
+            if ($e instanceof ValidationException) {
+                throw $e;
+            }
             throw new EvenementException('Erreur lors de la création de l\'événement : ' . $e->getMessage());
+        }
+    }
+
+    public function createCategorie(string $libelle, string $description): Categorie {
+        $safeLibelle = strip_tags(trim($libelle));
+        if (empty($safeLibelle)) {
+            throw new ValidationException("Le libellé de la catégorie est obligatoire.");
+        }
+
+        $safeDescription = strip_tags(trim($description));
+
+        try {
+            return Categorie::create([
+                'libelle' => $safeLibelle,
+                'description' => $safeDescription,
+            ]);
+        } catch (QueryException $e) {
+            throw new EvenementException("Erreur de base de données lors de la création de la catégorie.", 0, $e);
         }
     }
 }

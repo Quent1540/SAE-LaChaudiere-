@@ -19,6 +19,7 @@ use lachaudiere\application_core\application\useCases\ImagesEvenementService;
 use lachaudiere\webui\middleware\AuthMiddleware;
 use Psr\Container\ContainerInterface;
 use lachaudiere\webui\actions\AddEvenementAction;
+use lachaudiere\webui\actions\RegisterAction;
 
 $container = new Container();
 AppFactory::setContainer($container);
@@ -70,6 +71,14 @@ $container->set(AuthnServiceInterface::class, fn() => new AuthnService());
 
 $container->set(AuthnProviderInterface::class, function(ContainerInterface $c) {
     return new AuthnProvider($c->get(AuthnServiceInterface::class));
+});
+
+$container->set(RegisterAction::class, function (ContainerInterface $c) {
+    return new RegisterAction(
+        $c->get(AuthnProviderInterface::class),
+        $c->get(AuthnServiceInterface::class),
+        $c->get(Twig::class)
+    );
 });
 
 $container->set(AddEvenementAction::class, function(ContainerInterface $c) {

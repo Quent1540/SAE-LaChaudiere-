@@ -8,6 +8,7 @@ use lachaudiere\webui\providers\CsrfTokenException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
+use lachaudiere\application_core\application\exceptions\ValidationException;
 
 class AddEvenementAction {
     private EvenementServiceInterface $evenementService;
@@ -27,49 +28,22 @@ class AddEvenementAction {
 
         try {
             CsrfTokenProvider::check($data['csrf_token'] ?? null);
-        } catch (CsrfTokenException $e) {
-            return $view->render($response->withStatus(403), 'error.twig', [
-                'message' => 'Erreur de sécurité. Le formulaire a peut-être expiré. Veuillez réessayer.'
-            ]);
-        }
 
-        $titre = strip_tags(trim($data['titre'] ?? ''));
-        $description = strip_tags(trim($data['description'] ?? ''));
-        $legende = strip_tags(trim($data['legende'] ?? 'Image principale'));
-        $tarif = strip_tags(trim($data['tarif'] ?? ''));
-
-        $id_categorie = filter_var($data['id_categorie'] ?? null, FILTER_VALIDATE_INT, ['flags' => FILTER_NULL_ON_FAILURE]);
-        $date_debut = $data['date_debut'] ?? null;
-        $date_fin = $data['date_fin'] ?? null;
-
-        if (empty($titre)) {
-            return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Le titre est obligatoire.']);
-        }
-        if ($id_categorie === null) {
-            return $view->render($response->withStatus(400), 'error.twig', ['message' => 'La catégorie est obligatoire et doit être valide.']);
-        }
-        if ($date_debut && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_debut)) {
-            return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Format de la date de début invalide.']);
-        }
-        if (!empty($date_fin) && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_fin)) {
-            return $view->render($response->withStatus(400), 'error.twig', ['message' => 'Format de la date de fin invalide.']);
-        }
-
-        $user = $this->authProvider->getSignedInUser();
-        if (!$user) {
-            return $view->render($response, 'error.twig', ['message' => 'Vous devez être connecté.']);
-        }
-
-        try {
+            $user = $this->authProvider->getSignedInUser();
+            if (!$user) {
+                return $view->render($response->withStatus(403), 'error.twig', ['message' => 'Vous devez être connecté.']);
+            }
+            
+            // Préparer les données pour le service
             $eventData = [
-                'titre' => $titre,
-                'description' => $description,
-                'tarif' => $tarif,
-                'date_debut' => $date_debut,
-                'date_fin' => empty($date_fin) ? null : $date_fin,
-                'id_categorie' => $id_categorie,
+                'titre' => $data['titre'] ?? '',
+                'description' => $data['description'] ?? '',
+                'tarif' => $data['tarif'] ?? '',
+                'date_debut' => $data['date_debut'] ?? null,
+                'date_fin' => $data['date_fin'] ?? null,
+                'id_categorie' => $data['id_categorie'] ?? null,
                 'est_publie' => isset($data['est_publie']) ? 1 : 0,
-                'legende' => $legende,
+                'legende' => $data['legende'] ?? 'Image principale',
                 'id_utilisateur_creation' => $user->id_utilisateur,
             ];
 
@@ -80,14 +54,16 @@ class AddEvenementAction {
 
             return $view->render($response, 'evenementCree.twig', [
                 'success' => true,
-                'titre' => $titre
+                'titre' => $data['titre']
             ]);
 
+        } catch (CsrfTokenException $e) {
+            return $view->render($response->withStatus(403), 'error.twig', ['message' => 'Erreur de sécurité. Le formulaire a peut-être expiré.']);
+        } catch (ValidationException $e) {
+            return $view->render($response->withStatus(400), 'error.twig', ['message' => $e->getMessage()]);
         } catch (\Exception $e) {
             error_log('Event Creation Failed: ' . $e->getMessage());
-            return $view->render($response->withStatus(500), 'error.twig', [
-                'message' => 'Une erreur interne est survenue lors de la création de l\'événement.'
-            ]);
+            return $view->render($response->withStatus(500), 'error.twig', ['message' => 'Une erreur interne est survenue.']);
         }
     }
 }
