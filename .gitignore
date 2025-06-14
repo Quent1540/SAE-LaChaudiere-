@@ -4,7 +4,9 @@ vendor/
 Thumbs.db
 .idea/
 .vscode/
-lachaudiere/src/views/cache/
+lachaudiere/src/webui/views/cache/*
+
+!lachaudiere/src/webui/views/cache/.gitkeep
 composer.lock
 db_data/
 package-lock.json
