@@ -4,8 +4,8 @@ namespace lachaudiere\application_core\application\useCases;
 use lachaudiere\application_core\application\exceptions\EvenementException;
 use lachaudiere\application_core\application\exceptions\ValidationException;
 use lachaudiere\application_core\domain\entities\Categorie;
-use lachaudiere\application_core\domain\entities\Evenement;
 use Illuminate\Database\QueryException;
+use lachaudiere\application_core\domain\entities\Evenement;
 use Psr\Http\Message\UploadedFileInterface;
 
 class EvenementService implements EvenementServiceInterface {
@@ -16,57 +16,83 @@ class EvenementService implements EvenementServiceInterface {
         $this->imagesService = $imagesService;
     }
 
+    public function findEvenements(array $criteria = []): array {
+        $query = Evenement::query();
+
+        if (empty($criteria['include_unpublished'])) {
+            $query->where('est_publie', true);
+        }
+
+        if (!empty($criteria['id_categorie'])) {
+            $query->where('id_categorie', $criteria['id_categorie']);
+        }
+
+        if (!empty($criteria['periode'])) {
+            $now = date('Y-m-d H:i:s');
+            switch ($criteria['periode']) {
+                case 'passee':
+                    $query->where('date_fin', '<', $now);
+                    break;
+                case 'future':
+                    $query->where('date_debut', '>', $now);
+                    break;
+                case 'courante':
+                    $query->where('date_debut', '<=', $now)
+                          ->where('date_fin', '>=', $now);
+                    break;
+            }
+        }
+
+        $sortOrder = $criteria['sort'] ?? 'date-asc';
+        switch ($sortOrder) {
+            case 'date-desc':
+                $query->orderBy('date_debut', 'desc');
+                break;
+            case 'titre':
+                $query->orderBy('titre', 'asc');
+                break;
+            case 'date-asc':
+            default:
+                $query->orderBy('date_debut', 'asc');
+                break;
+        }
+
+        $query->with(['categorie', 'images']);
+        return $query->get()->toArray();
+    }
+
+    public function getEvenements(): array {
+        return $this->findEvenements(['include_unpublished' => true]);
+    }
+
+    public function getEvenementsAvecCategorie(): array {
+        return $this->findEvenements(['include_unpublished' => true, 'sort' => 'date-asc']);
+    }
+
+    public function getEvenementsParCategorie(int $id_categorie): array {
+        return $this->findEvenements([
+            'id_categorie' => $id_categorie,
+            'include_unpublished' => true,
+            'sort' => 'date-asc'
+        ]);
+    }
+
     public function getCategories(): array {
         try {
-            $result = Categorie::all();
-            return $result->toArray();
+            return Categorie::all()->toArray();
         } catch (\Exception $e) {
             throw new EvenementException('Erreur lors de la récupération des catégories : ' . $e->getMessage());
         }
     }
 
     public function getCategorieById(int $id_categorie): ?Categorie {
-        try {
-            return Categorie::find($id_categorie);
-        } catch (\Exception $e) {
-            throw new EvenementException('Erreur lors de la récupération des catégories : ' . $e->getMessage());
-        }
-    }
-
-    public function getEvenements(): array {
-        try {
-            return Evenement::with('categorie')->get()->toArray();
-        } catch (QueryException $e) {
-            throw new EvenementException('Erreur lors de la récupération des événements : ' . $e->getMessage());
-        } catch (\Exception $e) {
-            throw new EvenementException('Erreur inconnue : ' . $e->getMessage());
-        }
-    }
-
-    public function getEvenementsParCategorie(int $id_categorie): array {
-        try {
-            return Evenement::where('id_categorie', $id_categorie)->get()->toArray();
-        } catch (QueryException $e) {
-            throw new EvenementException('Erreur lors de la récupération des événements par catégorie : ' . $e->getMessage());
-        } catch (\Exception $e) {
-            throw new EvenementException('Erreur inconnue : ' . $e->getMessage());
-        }
-    }
-
-    public function getEvenementsAvecCategorie(): array {
-        try {
-            return Evenement::with(['categorie', 'images'])
-                ->orderBy('date_debut', 'asc')
-                ->get()
-                ->toArray();
-        } catch (\Exception $e) {
-            throw new EvenementException("Erreur lors de la récupération : " . $e->getMessage());
-        }
+        return Categorie::find($id_categorie);
     }
 
     public function getEvenementParId(int $id_evenement): array {
         try {
-            return Evenement::with(['images', 'categorie'])->findOrFail($id_evenement)->toArray();
+            $evenement = Evenement::with(['images', 'categorie'])->findOrFail($id_evenement);
+            return $evenement->toArray();
         } catch (\Exception $e) {
             throw new EvenementException('Événement introuvable : ' . $e->getMessage());
         }
@@ -82,24 +108,28 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
+    public function createCategorie(string $libelle, string $description): Categorie {
+        $safeLibelle = strip_tags(trim($libelle));
+        if (empty($safeLibelle)) {
+            throw new ValidationException("Le libellé de la catégorie est obligatoire.");
+        }
+
+        $safeDescription = strip_tags(trim($description));
+
+        try {
+            return Categorie::create([
+                'libelle' => $safeLibelle,
+                'description' => $safeDescription,
+            ]);
+        } catch (QueryException $e) {
+            throw new EvenementException("Erreur de base de données lors de la création de la catégorie.", 0, $e);
+        }
+    }
+
     public function createEvenementWithImage(array $data, ?UploadedFileInterface $imageFile): int {
         $titre = strip_tags(trim($data['titre'] ?? ''));
-        $tarif = strip_tags(trim($data['tarif'] ?? ''));
-        $id_categorie = filter_var($data['id_categorie'] ?? null, FILTER_VALIDATE_INT, ['flags' => FILTER_NULL_ON_FAILURE]);
-        $date_debut = $data['date_debut'] ?? null;
-        $date_fin = $data['date_fin'] ?? null;
-
         if (empty($titre)) {
             throw new ValidationException('Le titre est obligatoire.');
-        }
-        if ($id_categorie === null) {
-            throw new ValidationException('La catégorie est obligatoire et doit être valide.');
-        }
-        if ($date_debut && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_debut)) {
-            throw new ValidationException('Format de la date de début invalide.');
-        }
-        if (!empty($date_fin) && !\DateTime::createFromFormat('Y-m-d\TH:i', $date_fin)) {
-            throw new ValidationException('Format de la date de fin invalide.');
         }
 
         try {
@@ -126,24 +156,6 @@ class EvenementService implements EvenementServiceInterface {
                 throw $e;
             }
             throw new EvenementException('Erreur lors de la création de l\'événement : ' . $e->getMessage());
-        }
-    }
-
-    public function createCategorie(string $libelle, string $description): Categorie {
-        $safeLibelle = strip_tags(trim($libelle));
-        if (empty($safeLibelle)) {
-            throw new ValidationException("Le libellé de la catégorie est obligatoire.");
-        }
-
-        $safeDescription = strip_tags(trim($description));
-
-        try {
-            return Categorie::create([
-                'libelle' => $safeLibelle,
-                'description' => $safeDescription,
-            ]);
-        } catch (QueryException $e) {
-            throw new EvenementException("Erreur de base de données lors de la création de la catégorie.", 0, $e);
         }
     }
 }

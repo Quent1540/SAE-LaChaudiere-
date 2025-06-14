@@ -5,7 +5,6 @@ use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-//Action API pour récup la liste des événements
 class GetEvenementsApiAction {
     private EvenementServiceInterface $evenement;
 
@@ -14,38 +13,10 @@ class GetEvenementsApiAction {
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response {
-        //Récupération des paramètres de la requête (tri, période)
         $params = $request->getQueryParams();
-        $sort = $params['sort'] ?? '';
-        $periodes = explode(',', $request->getQueryParams()['periode'] ?? '');
-        $now = date('Y-m-d H:i:s');
+        
+        $evenements = $this->evenement->findEvenements($params);
 
-        //Récupération de tous les événements + filtrage par ceux publiés
-        $allEvenements = $this->evenement->getEvenements();
-        $evenements = array_filter($allEvenements, fn($e) => $e['est_publie']);
-
-        //Filtrage selon la période demandée (passée, courante, future)
-        if ($periodes && $periodes[0] !== '') {
-            $evenements = array_filter($evenements, function($event) use ($periodes, $now) {
-                foreach ($periodes as $periode) {
-                    if ($periode === 'passee' && $event['date_fin'] < $now) return true;
-                    if ($periode === 'courante' && $event['date_debut'] <= $now && $event['date_fin'] >= $now) return true;
-                    if ($periode === 'future' && $event['date_debut'] > $now) return true;
-                }
-                return false;
-            });
-        }
-
-        //Tri des événements selon le critère spécifié
-        if ($sort === 'date-asc') {
-            usort($evenements, fn($a, $b) => strtotime($a['date_debut']) <=> strtotime($b['date_debut']));
-        } elseif ($sort === 'date-desc') {
-            usort($evenements, fn($a, $b) => strtotime($b['date_debut']) <=> strtotime($a['date_debut']));
-        } elseif ($sort === 'titre') {
-            usort($evenements, fn($a, $b) => strcmp($a['titre'], $b['titre']));
-        }
-
-        //Structure de la réponse JSON
         $data = [
             'type' => 'collection',
             'count' => count($evenements),
