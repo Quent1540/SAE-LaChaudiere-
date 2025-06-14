@@ -26,6 +26,15 @@ class EvenementService implements EvenementServiceInterface {
         }
     }
 
+    public function getCategorieById(int $id_categorie): ?Categorie {
+        try {
+            $result = Categorie::find($id_categorie);
+            return $result;
+        } catch (\Exception $e) {
+            throw new EvenementException('Erreur lors de la récupération des catégories : ' . $e->getMessage());
+        }
+    }
+
     //Recup tous les événements avec leurs catégories
     public function getEvenements(): array {
         try {

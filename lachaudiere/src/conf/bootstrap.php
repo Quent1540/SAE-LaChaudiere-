@@ -14,8 +14,6 @@ use lachaudiere\application_core\application\useCases\AuthnServiceInterface;
 use lachaudiere\application_core\application\useCases\AuthnService;
 use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use lachaudiere\application_core\application\useCases\EvenementService;
-use lachaudiere\application_core\application\useCases\CategoriesServiceInterface;
-use lachaudiere\application_core\application\useCases\CategoriesService;
 use lachaudiere\application_core\application\useCases\ImagesEvenementServiceInterface;
 use lachaudiere\application_core\application\useCases\ImagesEvenementService;
 use lachaudiere\webui\middleware\AuthMiddleware;
@@ -67,7 +65,6 @@ $container->set(EvenementServiceInterface::class, function(ContainerInterface $c
     return new EvenementService($c->get(ImagesEvenementServiceInterface::class));
 });
 
-$container->set(CategoriesServiceInterface::class, fn() => new CategoriesService());
 
 $container->set(AuthnServiceInterface::class, fn() => new AuthnService());
 

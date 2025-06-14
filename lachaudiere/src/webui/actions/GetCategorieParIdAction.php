@@ -1,21 +1,19 @@
 <?php
 namespace lachaudiere\webui\actions;
 
-use lachaudiere\application_core\application\useCases\CategoriesServiceInterface;
+use lachaudiere\application_core\application\useCases\EvenementServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Slim\Exception\HttpNotFoundException;
-// AJOUTER CES USES
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\MarkdownConverter;
 
-//Action afficher une catégorie par son id
 class GetCategorieParIdAction {
-    private CategoriesServiceInterface $catalogue;
+    private EvenementServiceInterface $catalogue;
 
-    public function __construct(CategoriesServiceInterface $catalogue) {
+    public function __construct(EvenementServiceInterface $catalogue) {
         $this->catalogue = $catalogue;
     }
 
