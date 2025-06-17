@@ -18,6 +18,7 @@ services:
     depends_on:
       - sql
     command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+    restart: unless-stopped
 
   sql:
     container_name: lachaudiere-sql
@@ -33,6 +34,7 @@ services:
     volumes:
       - lachaudiere_db_data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
 
   adminer:
     container_name: lachaudiere-adminer
@@ -41,6 +43,7 @@ services:
       - "12346:8080"
     networks:
       - lachaudiere.net
+    restart: unless-stopped
 
   web:
     container_name: lachaudiere-web
@@ -51,6 +54,7 @@ services:
       - ./lachaudiere.web:/usr/share/nginx/html:ro
     networks:
       - lachaudiere.net
+    restart: unless-stopped
 
 volumes:
   lachaudiere_db_data:
